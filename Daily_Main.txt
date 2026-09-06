@@ -4,7 +4,7 @@
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊
 //本流程免费，请勿上当。待更新：成为武仙境界后，该流程会有许多问题。
 //自动更新------------------------------------------------------------------------------
-($Now_Version) = 2026090602
+($Now_Version) = 2026090603
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version1
 ($Net_Main_Name) = Daily_Main1
