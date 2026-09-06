@@ -6,8 +6,8 @@
 //自动更新------------------------------------------------------------------------------
 ($Now_Version) = 2026090603
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
-($Net_Version_Name) = Daily_Version1
-($Net_Main_Name) = Daily_Main1
+($Net_Version_Name) = Daily_Version
+($Net_Main_Name) = Daily_Main
 ($Task_Flow_Name) = A1日常
 
 @js window.reqV = $.ajax({type: 'GET', url: '(Repourl)/(Net_Version_Name).txt', async: false, cache: false});
