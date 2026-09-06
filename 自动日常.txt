@@ -6,8 +6,8 @@
 //自动更新------------------------------------------------------------------------------
 ($Now_Version) = 2026090601
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
-($Net_Version_Name) = Daily_Version
-($Net_Main_Name) = Daily_Main
+($Net_Version_Name) = 自动日常版本
+($Net_Main_Name) = 自动日常
 ($Task_Flow_Name) = A1日常
 
 @js window.Version = window.Version || {}, window.Version.fText = ($.ajax({type: 'GET', url: '(Repourl)/(Net_Version_Name).txt', async: false, cache: false}).responseText || "").trim()
