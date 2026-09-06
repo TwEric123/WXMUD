@@ -1,35 +1,34 @@
-//流程发布日期：2026/09/06  公开版本：v1.0  仅支持内置插件WSMUD2 26.3.5
+//流程发布日期：2026/09/06  仅支持内置插件WSMUD2 26.3.5
 //使用方法：全部复制到流程内贴上后，运行即可，手机版贴上需读取一段时间。
 //1.服务器卡顿、延迟可能造成流程判断异常，请自行注意。2.灵兽秘境中自动出招会失效，请注意别被打死。3.改名后需重新设置
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊
 //本流程免费，请勿上当。待更新：成为武仙境界后，该流程会有许多问题。
 //自动更新------------------------------------------------------------------------------
-($Now_Version) = 2026090601
+($Now_Version) = 2026090602
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
-($Net_Version_Name) = 自动日常版本
-($Net_Main_Name) = 自动日常
+($Net_Version_Name) = Daily_Version1
+($Net_Main_Name) = Daily_Main1
 ($Task_Flow_Name) = A1日常
 
-@js window.Version = window.Version || {}, window.Version.fText = ($.ajax({type: 'GET', url: '(Repourl)/(Net_Version_Name).txt', async: false, cache: false}).responseText || "").trim()
-@js if (window.Version.fText.indexOf("Couldn't find") !== -1) window.Version.fText = "";
+@js window.reqV = $.ajax({type: 'GET', url: '(Repourl)/(Net_Version_Name).txt', async: false, cache: false});
+@js window.Version = window.Version || {}; window.Version.fText = (window.reqV.status === 200 ? window.reqV.responseText : "").trim();
 @js ($Net_Version) = window.Version.fText
 
 [if] (Net_Version) != null && (Net_Version) != ""
  @print 🌐 网络连接正常，远程版本号为：(Net_Version)
- [if] (Net_Version) == (Now_Version)
-  @print 🎉 当前已是最新版本，无需更新。
  [if] (Net_Version) != (Now_Version)
   @print 🔄 检测到新版本，开始下载主要流程文件...
-  @js window.Main = window.Main || {}, window.Main.fText = $.ajax({type: 'GET', url: '(Repourl)/(Net_Main_Name).txt', async: false, cache: false}).responseText || ""
-  @js if (window.Main.fText.indexOf("Couldn't find") !== -1) window.Main.fText = "";
+  @js window.reqM = $.ajax({type: 'GET', url: '(Repourl)/(Net_Main_Name).txt', async: false, cache: false});
+  @js window.Main = window.Main || {}; window.Main.fText = (window.reqM.status === 200 ? window.reqM.responseText : "");
   [if] window.Main.fText != null && window.Main.fText != ""
    @js WorkflowConfig.removeWorkflow({"name":"(Task_Flow_Name)","type":"flow","finder":"根文件夹"})
    @js WorkflowConfig.createWorkflow("(Task_Flow_Name)", window.Main.fText, "根文件夹")
    @js ($Now_Version) = window.Version.fText
    @print ✅ 成功！【(Task_Flow_Name)】流程已更新至版本：(Net_Version)
-   [exit]
   [else]
    @print ❌ 版本号获取成功，但流程文件 (Net_Main_Name).txt 不存在或下载失败！
+ [if] (Net_Version) == (Now_Version)
+  @print 🎉 当前已是最新版本，无需更新。
 [if] (Net_Version) == null || (Net_Version) == ""
  @print ❌ 网络失败！GitHub 仓库中未找到 (Net_Version_Name).txt 文件。
 //存档名宣告------------------------------------------------------------------------------
