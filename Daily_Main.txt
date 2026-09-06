@@ -1,8 +1,38 @@
-//流程发布日期：2026/09/06  公开版本：v2026090601  仅支持内置插件WSMUD2 26.3.5
+//流程发布日期：2026/09/06  公开版本：v1.0  仅支持内置插件WSMUD2 26.3.5
 //使用方法：全部复制到流程内贴上后，运行即可，手机版贴上需读取一段时间。
 //1.服务器卡顿、延迟可能造成流程判断异常，请自行注意。2.灵兽秘境中自动出招会失效，请注意别被打死。3.改名后需重新设置
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊
 //本流程免费，请勿上当。待更新：成为武仙境界后，该流程会有许多问题。
+//自动更新------------------------------------------------------------------------------
+($Now_Version) = 2026090601
+($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
+($Net_Version_Name) = Daily_Version
+($Net_Main_Name) = Daily_Main
+($Task_Flow_Name) = A1日常
+
+@js window.Version = window.Version || {}, window.Version.fText = ($.ajax({type: 'GET', url: '(Repourl)/(Net_Version_Name).txt', async: false, cache: false}).responseText || "").trim()
+@js if (window.Version.fText.indexOf("Couldn't find") !== -1) window.Version.fText = "";
+@js ($Net_Version) = window.Version.fText
+
+[if] (Net_Version) != null && (Net_Version) != ""
+ @print 🌐 网络连接正常，远程版本号为：(Net_Version)
+ [if] (Net_Version) != (Now_Version)
+  @print 🔄 检测到新版本，开始下载主要流程文件...
+  @js window.Main = window.Main || {}, window.Main.fText = $.ajax({type: 'GET', url: '(Repourl)/(Net_Main_Name).txt', async: false, cache: false}).responseText || ""
+  @js if (window.Main.fText.indexOf("Couldn't find") !== -1) window.Main.fText = "";
+  [if] window.Main.fText != null && window.Main.fText != ""
+   @js WorkflowConfig.removeWorkflow({"name":"(Task_Flow_Name)","type":"flow","finder":"根文件夹"})
+   @js WorkflowConfig.createWorkflow("(Task_Flow_Name)", window.Main.fText, "根文件夹")
+   @js ($Now_Version) = window.Version.fText
+   @print ✅ 成功！【(Task_Flow_Name)】流程已更新至版本：(Net_Version)
+   [exit]
+  [else]
+   @print ❌ 版本号获取成功，但流程文件 (Net_Main_Name).txt 不存在或下载失败！
+ [if] (Net_Version) == (Now_Version)
+  @print 🎉 当前已是最新版本，无需更新。
+[if] (Net_Version) == null || (Net_Version) == ""
+ @print ❌ 网络失败！GitHub 仓库中未找到 (Net_Version_Name).txt 文件。
+//存档名宣告------------------------------------------------------------------------------
 ($Set_Daily_Buy_Skip_Ticket_ID) = (:name)Daily_Buy_Skip_Ticket_ID
 ($Set_Daily_Buy_Skip_Ticket_100) = (:name)Daily_Buy_Skip_Ticket_100
 ($Set_Daily_Buy_Pet_Ticket) = (:name)Daily_Buy_Pet_Ticket
@@ -35,7 +65,7 @@
 ($Set_Daily_Lingshou_Train) = (:name)Daily_Lingshou_Train
 
 ($Set_Daily_End) = (:name)Daily_End
-//
+//读取存档设定------------------------------------------------------------------------------
 @js ($D_Daily_Buy_Skip_Ticket_ID) = WSStore.get('(Set_Daily_Buy_Skip_Ticket_ID)')
 @js ($D_Daily_Buy_Skip_Ticket_100) = WSStore.get('(Set_Daily_Buy_Skip_Ticket_100)')
 @js ($D_Daily_Buy_Pet_Ticket) = WSStore.get('(Set_Daily_Buy_Pet_Ticket)')
@@ -68,7 +98,7 @@
 @js ($D_Daily_Lingshou_Train) = WSStore.get('(Set_Daily_Lingshou_Train)')
 
 @js ($D_Daily_End) = WSStore.get('(Set_Daily_End)')
-//
+//预设值------------------------------------------------------------------------------
 [if] (D_Daily_Buy_Skip_Ticket_ID) == null
  ($D_Daily_Buy_Skip_Ticket_ID) = 不知道
 [if] (D_Daily_Buy_Skip_Ticket_100) == null
@@ -124,7 +154,7 @@
 
 [if] (D_Daily_End) == null
  ($D_Daily_End) = 挖矿
-//
+//选项设定------------------------------------------------------------------------------
 #input ($Daily_Buy_Skip_Ticket_ID) = <span style="color: #14b53a; font-weight: bold;">自动购买--扫荡符ID(更新会浮动),(D_Daily_Buy_Skip_Ticket_ID)
 #select ($Daily_Buy_Skip_Ticket_100) = <span style="color: #14b53a; font-weight: bold;">自动购买--扫荡符,跳过|购买,(D_Daily_Buy_Skip_Ticket_100)
 #select ($Daily_Buy_Pet_Ticket) = <span style="color: #14b53a; font-weight: bold;">自动购买--驭兽符,跳过|购买,(D_Daily_Buy_Pet_Ticket)
@@ -160,7 +190,7 @@
 
 #select ($Daily_Reset_Flag) = <span style="color: #e30707; font-weight: bold;">重置完成旗标,跳过|重置,跳过
 #config
-//
+//选项保存------------------------------------------------------------------------------
 @js WSStore.set('(Set_Daily_Buy_Skip_Ticket_ID)','(Daily_Buy_Skip_Ticket_ID)')
 @js WSStore.set('(Set_Daily_Buy_Skip_Ticket_100)','(Daily_Buy_Skip_Ticket_100)')
 @js WSStore.set('(Set_Daily_Buy_Pet_Ticket)','(Daily_Buy_Pet_Ticket)')
@@ -193,7 +223,7 @@
 @js WSStore.set('(Set_Daily_Lingshou_Train)','(Daily_Lingshou_Train)')
 
 @js WSStore.set('(Set_Daily_End)','(Daily_End)')
-//
+//流程开始------------------------------------------------------------------------------
 @cmdDelay 0
 state stop
 //状态检查------------------------------------------------------------------------------
