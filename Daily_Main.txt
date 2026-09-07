@@ -4,12 +4,13 @@
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊。(服务器卡顿、断线造成的问题难以解决。)
 //本流程免费，旨在日常减负，请勿用作商业用途。
 //自动更新------------------------------------------------------------------------------
-($Now_Version) = 2026090801
+($Now_Version) = 2026090802
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Net_Main_Name) = Daily_Main
 ($Task_Flow_Name) = A1日常
 
+//~silent
 @js window.reqV = $.ajax({type: 'GET', url: '(Repourl)/(Net_Version_Name).txt', async: false, cache: false});
 @js window.Version = window.Version || {}; window.Version.fText = (window.reqV.status === 200 ? window.reqV.responseText : "").trim();
 @js ($Net_Version) = window.Version.fText
