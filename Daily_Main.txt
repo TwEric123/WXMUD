@@ -3,7 +3,7 @@
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊。
 //本流程免费，请勿用作商业用途。
 //自动更新------------------------------------------------------------------------------
-($Now_Version) = 2026090703
+($Now_Version) = 2026090704
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Net_Main_Name) = Daily_Main
@@ -15,23 +15,23 @@
 
 [if] (Net_Version) != null && (Net_Version) != ""
  @print 🌐 网络连接正常，远程版本号为：(Net_Version)
+ [if] (Net_Version) == (Now_Version)
+  @print 🎉 当前已是最新版本，无需更新。
  [if] (Net_Version) != (Now_Version)
-  tm 🔄 检测到新版本，开始下载主要流程文件...
+  @print 🔄 检测到新版本，开始下载主要流程文件...
   @js window.reqM = $.ajax({type: 'GET', url: '(Repourl)/(Net_Main_Name).txt', async: false, cache: false});
   @js window.Main = window.Main || {}; window.Main.fText = (window.reqM.status === 200 ? window.reqM.responseText : "");
   [if] window.Main.fText != null && window.Main.fText != ""
    @js WorkflowConfig.removeWorkflow({"name":"(Task_Flow_Name)","type":"flow","finder":"根文件夹"})
    @js WorkflowConfig.createWorkflow("(Task_Flow_Name)", window.Main.fText, "根文件夹")
    @js ($Now_Version) = window.Version.fText
-   tm ✅ 成功！【(Task_Flow_Name)】流程已更新至最新版本，请自行重新运行流程。
+   @print ✅ 成功！【(Task_Flow_Name)】流程已更新至最新版本，请自行重新运行流程。
    @print ✅ 更新后版本号：(Net_Version)
    [exit]
   [else]
    tm ❌ 版本号获取成功，但流程文件 (Net_Main_Name).txt 不存在或下载失败！
-  [if] (Net_Version) == (Now_Version)
-   @print 🎉 当前已是最新版本，无需更新。
 [if] (Net_Version) == null || (Net_Version) == ""
- tm ❌ 网络失败！GitHub 仓库中未找到 (Net_Version_Name).txt 文件。
+ tm ❌ 网络失败！仓库中未找到 (Net_Version_Name).txt 文件。
 //存档名宣告------------------------------------------------------------------------------
 ($Set_Daily_Buy_Skip_Ticket_ID) = (:name)Daily_Buy_Skip_Ticket_ID
 ($Set_Daily_Buy_Skip_Ticket_100) = (:name)Daily_Buy_Skip_Ticket_100
