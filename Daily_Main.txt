@@ -1,10 +1,10 @@
-//流程发布日期：2026/09/06  仅支持内置插件WSMUD2 26.3.5
+//流程发布日期：2026/09/07  仅支持内置插件WSMUD2 26.3.5
 //使用方法：全部复制到流程内贴上后，运行即可，手机版贴上需读取一段时间。
 //1.服务器卡顿、延迟可能造成流程判断异常，请自行注意。2.灵兽秘境中自动出招会失效，请注意别被打死。3.改名后需重新设置
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊
 //本流程免费，请勿上当。待更新：成为武仙境界后，该流程会有许多问题。
 //自动更新------------------------------------------------------------------------------
-($Now_Version) = 2026090603
+($Now_Version) = 2026090701
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Net_Main_Name) = Daily_Main
@@ -99,7 +99,7 @@
 @js ($D_Daily_End) = WSStore.get('(Set_Daily_End)')
 //预设值------------------------------------------------------------------------------
 [if] (D_Daily_Buy_Skip_Ticket_ID) == null
- ($D_Daily_Buy_Skip_Ticket_ID) = 不知道
+ ($D_Daily_Buy_Skip_Ticket_ID) = 2pv211c835bd0
 [if] (D_Daily_Buy_Skip_Ticket_100) == null
  ($D_Daily_Buy_Skip_Ticket_100) = 跳过
 [if] (D_Daily_Buy_Pet_Ticket) == null
