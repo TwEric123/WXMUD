@@ -1,0 +1,21 @@
+//此流程为更新器，重复执行此流程只会进行强制下载、更新。
+//主流程自带自动更新，下载/更新完毕后直接删除本流程即可。
+//执行流程且成功后，刷新一下流程列表，即可看到A1日常流程。
+//自动更新------------------------------------------------------------------------------
+($Now_Version) = 0
+($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
+($Net_Version_Name) = Daily_Version
+($Task_Flow_Name) = A1日常
+//~silent
+($Net_Main_Name) = Daily_Main
+@print 🔄 检测到新版本，开始下载主要流程文件...
+@js window.reqM = $.ajax({type: 'GET', url: '(Repourl)/(Net_Main_Name).txt', async: false, cache: false});
+@js window.Main = window.Main || {}; window.Main.fText = (window.reqM.status === 200 ? window.reqM.responseText : "");
+[if] window.Main.fText != null && window.Main.fText != ""
+ @js WorkflowConfig.removeWorkflow({"name":"(Task_Flow_Name)","type":"flow","finder":"根文件夹"})
+ @js WorkflowConfig.createWorkflow("(Task_Flow_Name)", window.Main.fText, "根文件夹")
+ @print ✅ 成功！【(Task_Flow_Name)】流程已更新至最新版本。
+ @print ✅ 主流程自带自动更新，请直接删除本流程。
+  [exit]
+[else]
+ @print ❌ 流程文件 (Net_Main_Name).txt 不存在或下载失败！
