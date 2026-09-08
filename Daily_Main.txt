@@ -4,22 +4,35 @@
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊。(服务器卡顿、断线造成的问题难以解决。)
 //本流程免费，旨在日常减负，请勿用作商业用途。
 //自动更新------------------------------------------------------------------------------
-($Now_Version) = 2026090802
+($Now_Version) = 2026090901
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
-($Net_Main_Name) = Daily_Main
 ($Task_Flow_Name) = A1日常
-
+($Dom_Load_Time) = 500
 //~silent
-@js window.reqV = $.ajax({type: 'GET', url: '(Repourl)/(Net_Version_Name).txt', async: false, cache: false});
-@js window.Version = window.Version || {}; window.Version.fText = (window.reqV.status === 200 ? window.reqV.responseText : "").trim();
-@js ($Net_Version) = window.Version.fText
-
-[if] (Net_Version) != null && (Net_Version) != ""
+[if] (Now_Version) == stop
+ @print 🟡 自动更新未启用。
+[if] (Now_Version) != stop
+ @js window.reqV = $.ajax({type: 'GET', url: '(Repourl)/(Net_Version_Name).txt', async: false, cache: false});
+ @js window.Version = window.Version || {}; window.Version.fText = (window.reqV.status === 200 ? window.reqV.responseText : "").trim();
+ @js ($Net_Version) = window.Version.fText
+ [if] (Net_Version) == null || (Net_Version) == ""
+  @print ❌ 网络失败！仓库中未找到 (Net_Version_Name).txt 文件。
+[if] (Now_Version) != stop && (Now_Version) == test
+ ($Net_Main_Name) = Daily_Test
+ @js window.reqM = $.ajax({type: 'GET', url: '(Repourl)/(Net_Main_Name).txt', async: false, cache: false});
+ @js window.Main = window.Main || {}; window.Main.fText = (window.reqM.status === 200 ? window.reqM.responseText : "");
+ @js WorkflowConfig.removeWorkflow({"name":"(Task_Flow_Name)","type":"flow","finder":"根文件夹"})
+ @js WorkflowConfig.createWorkflow("(Task_Flow_Name)", window.Main.fText, "根文件夹")
+ @js ($Now_Version) = window.Version.fText
+ @print 🟡 已尝试下载测试版。
+ [exit]
+[if] (Now_Version) != stop && (Net_Version) != null && (Net_Version) != ""
  @print 🌐 网络连接正常，远程版本号为：(Net_Version)
  [if] (Net_Version) == (Now_Version)
   @print 🎉 当前已是最新版本，无需更新。
  [if] (Net_Version) != (Now_Version)
+  ($Net_Main_Name) = Daily_Main
   @print 🔄 检测到新版本，开始下载主要流程文件...
   @js window.reqM = $.ajax({type: 'GET', url: '(Repourl)/(Net_Main_Name).txt', async: false, cache: false});
   @js window.Main = window.Main || {}; window.Main.fText = (window.reqM.status === 200 ? window.reqM.responseText : "");
@@ -32,10 +45,134 @@
    [exit]
   [else]
    @print ❌ 版本号获取成功，但流程文件 (Net_Main_Name).txt 不存在或下载失败！
-[if] (Net_Version) == null || (Net_Version) == ""
- @print ❌ 网络失败！仓库中未找到 (Net_Version_Name).txt 文件。
+//ID自动侦测------------------------------------------------------------------------------
+@js window.btn = document.querySelector('.dialog-close'); window.btn && window.btn.click()
+@await (Dom_Load_Time)
+//黄金扫荡符ID
+@js window.barElements = document.querySelectorAll('.tool-bar span, .tool-bar div, .dialog-footer span, footer span')
+@js window.targetBtn = undefined
+@js for (var i = 0; i < window.barElements.length; i++) { if (window.barElements[i].innerText.trim() === '商城') { window.targetBtn = window.barElements[i]; break; } }
+@js window.targetBtn && window.targetBtn.click()
+@await (Dom_Load_Time)
+
+@js window.subTabs = document.querySelectorAll('.dialog-footer span, .dialog-tab span')
+@js window.subTabs && window.subTabs[0] && window.subTabs[0].click()
+@await (Dom_Load_Time)
+
+@js window.shopTitles = document.querySelectorAll('.shop-item-title')
+@js window.targetTitle = undefined
+@js for (var i = 0; i < window.shopTitles.length; i++) { if (window.shopTitles[i].innerText.indexOf('扫荡符') !== -1) { window.targetTitle = window.shopTitles[i]; break; } }
+
+@js window.parentCard = window.targetTitle ? (window.targetTitle.parentElement.parentElement || window.targetTitle.parentElement) : null
+@js window.buyBtn = window.parentCard ? window.parentCard.querySelector('[cmd*="_confirm shop"]') : null
+@js window.shopCmd = window.buyBtn ? window.buyBtn.getAttribute('cmd') : ""
+
+@js window.parts = window.shopCmd ? window.shopCmd.split(' ') : []; window.realId = ""
+@js for (var i = 0; i < window.parts.length; i++) { if (window.parts[i] !== "_confirm" && window.parts[i] !== "shop" && window.parts[i] !== "0" && window.parts[i].length > 5) { window.realId = window.parts[i].trim(); break; } }
+
+@js ($Dom_Skip_Ticket_ID) = (window.realId && window.realId !== "null") ? window.realId : ""
+
+@js window.btn = document.querySelector('.dialog-close'); window.btn && window.btn.click()
+@await (Dom_Load_Time)
+//出战中灵兽ID
+@js window.barElements = document.querySelectorAll('.tool-bar span, .tool-bar div, .dialog-footer span, footer span')
+@js window.targetBtn = undefined
+@js for (var i = 0; i < window.barElements.length; i++) { if (window.barElements[i].innerText.trim() === '江湖') { window.targetBtn = window.barElements[i]; break; } }
+@js window.targetBtn && window.targetBtn.click()
+@await (Dom_Load_Time)
+
+@js window.subTabs = document.querySelectorAll('.dialog-footer span, .dialog-tab span')
+@js window.subTabs && window.subTabs[4] && window.subTabs[4].click()
+@await (Dom_Load_Time)
+
+@js window.leftItems = document.querySelectorAll('.fb-left .fb-item')
+@js window.beastBtn = undefined
+@js for (var i = 0; i < window.leftItems.length; i++) { if (window.leftItems[i].innerText.indexOf('我的灵兽') !== -1) { window.beastBtn = window.leftItems[i]; break; } }
+@js window.beastBtn && window.beastBtn.click()
+@await (Dom_Load_Time)
+
+@js window.beastCards = document.querySelectorAll('.jh-lingshou-card') || []
+@js window.activeCard = null
+@js for (var i = 0; i < window.beastCards.length; i++) { if (window.beastCards[i].innerText.indexOf('出战中') !== -1) { window.activeCard = window.beastCards[i]; break; } }
+
+@js window.nameEl = window.activeCard ? window.activeCard.querySelector('.jh-lingshou-name') : null
+@js window.cmdStr = window.nameEl ? window.nameEl.getAttribute('cmd') : ""
+
+@js window.cleanName = window.nameEl ? window.nameEl.innerText.split('\n')[0].replace(/<[^>]+>/g, '').trim() : ""
+@js window.cleanId = window.cmdStr ? window.cmdStr.split(' ').pop().trim() : ""
+
+@js ($Dom_Lingshou_Name) = window.cleanName ? window.cleanName : ""
+@js ($Dom_Lingshou_ID)   = (window.cleanId && window.cleanId !== "null") ? window.cleanId : ""
+
+@js window.btn = document.querySelector('.dialog-close'); window.btn && window.btn.click()
+@await (Dom_Load_Time)
+//随从名字、ID
+@js window.barElements = document.querySelectorAll('.tool-bar span, .tool-bar div, .dialog-footer span, footer span')
+@js window.targetBtn = undefined
+@js for (var i = 0; i < window.barElements.length; i++) { if (window.barElements[i].innerText.trim() === '社交') { window.targetBtn = window.barElements[i]; break; } }
+@js window.targetBtn && window.targetBtn.click()
+@await (Dom_Load_Time)
+
+@js window.subTabs = document.querySelectorAll('.dialog-footer span, .dialog-tab span')
+@js window.subTabs && window.subTabs[2] && window.subTabs[2].click()
+@await (Dom_Load_Time)
+
+@js window.allCards = document.querySelectorAll('.dialog-content .relation-item') || []; window.items = []
+@js for (var i = 0; i < window.allCards.length; i++) { if (window.allCards[i].querySelector('[cmd*="rel "]')) window.items.push(window.allCards[i]); }
+
+@js window.item0 = window.items[0]; window.cmd0 = window.item0 ? window.item0.querySelector('[cmd*="rel "]') : null
+@js window.txt0 = window.item0 ? window.item0.innerText : ""
+@js window.clean0 = window.txt0 ? window.txt0.split('\n')[0].replace('你的家人：','').replace(/(<.*>|空闲中|采药|钓鱼|挖矿).*/g, '').trim() : ""
+@js ($Dom_Companion_Name1) = window.clean0 ? window.clean0.split(' ').pop().trim() : ""
+@js ($Dom_Companion_ID1)   = window.cmd0 ? window.cmd0.getAttribute('cmd').split(' ')[1].trim() : ""
+
+@js window.item1 = window.items[1]; window.cmd1 = window.item1 ? window.item1.querySelector('[cmd*="rel "]') : null
+@js window.txt1 = window.item1 ? window.item1.innerText : ""
+@js window.clean1 = window.txt1 ? window.txt1.split('\n')[0].replace('你的家人：','').replace(/(<.*>|空闲中|采药|钓鱼|挖矿).*/g, '').trim() : ""
+@js ($Dom_Companion_Name2) = window.clean1 ? window.clean1.split(' ').pop().trim() : ""
+@js ($Dom_Companion_ID2)   = window.cmd1 ? window.cmd1.getAttribute('cmd').split(' ')[1].trim() : ""
+
+@js window.item2 = window.items[2]; window.cmd2 = window.item2 ? window.item2.querySelector('[cmd*="rel "]') : null
+@js window.txt2 = window.item2 ? window.item2.innerText : ""
+@js window.clean2 = window.txt2 ? window.txt2.split('\n')[0].replace('你的家人：','').replace(/(<.*>|空闲中|采药|钓鱼|挖矿).*/g, '').trim() : ""
+@js ($Dom_Companion_Name3) = window.clean2 ? window.clean2.split(' ').pop().trim() : ""
+@js ($Dom_Companion_ID3)   = window.cmd2 ? window.cmd2.getAttribute('cmd').split(' ')[1].trim() : ""
+
+@js window.btn = document.querySelector('.dialog-close'); window.btn && window.btn.click()
+@await (Dom_Load_Time)
+//ID结果输出
+[if] (Dom_Skip_Ticket_ID) != null
+ @print 🛒 扫荡符|ID:(Dom_Skip_Ticket_ID)
+[if] (Dom_Skip_Ticket_ID) == null
+ @print ❌ 扫荡符|ID:侦测失败
+
+[if] (Dom_Lingshou_ID) != null
+ @print 🐾 灵兽:(Dom_Lingshou_Name)
+ @print 🐾 ID:(Dom_Lingshou_ID)
+[if] (Dom_Lingshou_ID) == null
+ @print ❌ 灵兽|ID:侦测失败
+
+[if] (Dom_Companion_ID1) != null
+ ($Now_Companion_Name1) = (Dom_Companion_Name1)
+ ($Now_Companion_ID1) = (Dom_Companion_ID1)
+ @print 🧍 (Dom_Companion_Name1)|ID:(Dom_Companion_ID1)
+[if] (Dom_Companion_ID1) == null
+ @print ❌ 随从1|ID:侦测失败
+
+[if] (Dom_Companion_ID2) != null
+ ($Now_Companion_Name2) = (Dom_Companion_Name2)
+ ($Now_Companion_ID2) = (Dom_Companion_ID2)
+ @print 🧍 (Dom_Companion_Name2)|ID:(Dom_Companion_ID2)
+[if] (Dom_Companion_ID2) == null
+ @print ❌ 随从2|ID:侦测失败
+
+[if] (Dom_Companion_ID3) != null
+ ($Now_Companion_Name3) = (Dom_Companion_Name3)
+ ($Now_Companion_ID3) = (Dom_Companion_ID3)
+ @print 🧍 (Dom_Companion_Name3)|ID:(Dom_Companion_ID3)
+[if] (Dom_Companion_ID3) == null
+ @print ❌ 随从3|ID:侦测失败
 //存档名宣告------------------------------------------------------------------------------
-($Set_Daily_Buy_Skip_Ticket_ID) = (:name)Daily_Buy_Skip_Ticket_ID
 ($Set_Daily_Buy_Skip_Ticket_100) = (:name)Daily_Buy_Skip_Ticket_100
 ($Set_Daily_Buy_Pet_Ticket) = (:name)Daily_Buy_Pet_Ticket
 
@@ -61,14 +198,12 @@
 ($Set_Daily_Yunbiao_Type) = (:name)Daily_Yunbiao_Type
 ($Set_Daily_Yunbiao_Car) = (:name)Daily_Yunbiao_Car
 
-($Set_Daily_Lingshou_ID) = (:name)Daily_Lingshou_ID
 ($Set_Daily_Lingshou_Interact) = (:name)Daily_Lingshou_Interact
 ($Set_Daily_Lingshou_Explore) = (:name)Daily_Lingshou_Explore
 ($Set_Daily_Lingshou_Train) = (:name)Daily_Lingshou_Train
 
 ($Set_Daily_End) = (:name)Daily_End
 //读取存档设定------------------------------------------------------------------------------
-@js ($D_Daily_Buy_Skip_Ticket_ID) = WSStore.get('(Set_Daily_Buy_Skip_Ticket_ID)')
 @js ($D_Daily_Buy_Skip_Ticket_100) = WSStore.get('(Set_Daily_Buy_Skip_Ticket_100)')
 @js ($D_Daily_Buy_Pet_Ticket) = WSStore.get('(Set_Daily_Buy_Pet_Ticket)')
 
@@ -94,15 +229,12 @@
 @js ($D_Daily_Yunbiao_Type) = WSStore.get('(Set_Daily_Yunbiao_Type)')
 @js ($D_Daily_Yunbiao_Car) = WSStore.get('(Set_Daily_Yunbiao_Car)')
 
-@js ($D_Daily_Lingshou_ID) = WSStore.get('(Set_Daily_Lingshou_ID)')
 @js ($D_Daily_Lingshou_Interact) = WSStore.get('(Set_Daily_Lingshou_Interact)')
 @js ($D_Daily_Lingshou_Explore) = WSStore.get('(Set_Daily_Lingshou_Explore)')
 @js ($D_Daily_Lingshou_Train) = WSStore.get('(Set_Daily_Lingshou_Train)')
 
 @js ($D_Daily_End) = WSStore.get('(Set_Daily_End)')
 //预设值------------------------------------------------------------------------------
-[if] (D_Daily_Buy_Skip_Ticket_ID) == null
- ($D_Daily_Buy_Skip_Ticket_ID) = 2pv211c835bd0
 [if] (D_Daily_Buy_Skip_Ticket_100) == null
  ($D_Daily_Buy_Skip_Ticket_100) = 跳过
 [if] (D_Daily_Buy_Pet_Ticket) == null
@@ -145,8 +277,6 @@
 [if] (D_Daily_Yunbiao_Car) == null
  ($D_Daily_Yunbiao_Car) = 皇家贡镖
 
-[if] (D_Daily_Lingshou_ID) == null
- ($D_Daily_Lingshou_ID) = 不知道
 [if] (D_Daily_Lingshou_Interact) == null
  ($D_Daily_Lingshou_Interact) = 跳过
 [if] (D_Daily_Lingshou_Explore) == null
@@ -157,9 +287,11 @@
 [if] (D_Daily_End) == null
  ($D_Daily_End) = 挖矿
 //选项设定------------------------------------------------------------------------------
-#input ($Daily_Buy_Skip_Ticket_ID) = <span style="color: #14b53a; font-weight: bold;">自动购买--扫荡符ID(更新会浮动),(D_Daily_Buy_Skip_Ticket_ID)
-#select ($Daily_Buy_Skip_Ticket_100) = <span style="color: #14b53a; font-weight: bold;">自动购买--扫荡符,跳过|购买,(D_Daily_Buy_Skip_Ticket_100)
-#select ($Daily_Buy_Pet_Ticket) = <span style="color: #14b53a; font-weight: bold;">自动购买--驭兽符,跳过|购买,(D_Daily_Buy_Pet_Ticket)
+#input ($Daily_Buy_Skip_Ticket_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--扫荡符ID,(Dom_Skip_Ticket_ID)
+#input ($Daily_Lingshou_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--出战中灵兽ID,(Dom_Lingshou_ID)
+
+#select ($Daily_Buy_Skip_Ticket_100) = <span style="color: #14b53a; font-weight: bold;">每日购买--扫荡符,跳过|购买,(D_Daily_Buy_Skip_Ticket_100)
+#select ($Daily_Buy_Pet_Ticket) = <span style="color: #14b53a; font-weight: bold;">每日购买--驭兽符,跳过|购买,(D_Daily_Buy_Pet_Ticket)
 
 #select ($Daily_Companion_Work) = <span style="color: #00CC00; font-weight: bold;">随从--发呆检测(矿>鱼>药),跳过|自动指派,(D_Daily_Companion_Work)
 
@@ -167,7 +299,7 @@
 #select ($Daily_Job_Greet) = <span style="color: #13339e; font-weight: bold;">日常--门派请安,跳过|请安,(D_Daily_Job_Greet)
 #select ($Daily_Job_Reward) = <span style="color: #13339e; font-weight: bold;">日常--门派物资,跳过|领取,(D_Daily_Job_Reward)
 
-#select ($Daily_Dungeon_Yanziwu) = <span style="color: #990099; font-weight: bold;">副本--燕子坞每日扫荡,跳过|普通五次|困难五次,(D_Daily_Dungeon_Yanziwu)
+#select ($Daily_Dungeon_Yanziwu) = <span style="color: #990099; font-weight: bold;">副本--每日燕子坞扫荡,跳过|普通五次|困难五次,(D_Daily_Dungeon_Yanziwu)
 
 #select ($Daily_Penglai_Search) = <span style="color: #0f9994; font-weight: bold;">蓬莱岛--搜索,跳过|搜索,(D_Daily_Penglai_Search)
 #select ($Daily_Penglai_Put) = <span style="color: #0f9994; font-weight: bold;">蓬莱岛--观山/临水,跳过|观山|临水,(D_Daily_Penglai_Put)
@@ -183,17 +315,15 @@
 #select ($Daily_Yunbiao_Type)= <span style="color: #75076c; font-weight: bold;">自动运镖--运镖类型(高危需师徒组队),安全|高危,(D_Daily_Yunbiao_Type)
 #select ($Daily_Yunbiao_Car)= <span style="color: #75076c; font-weight: bold;">自动运镖--镖车类型(九霄需武仙以上),普通民镖|商行商标|珍宝玉镖|皇家贡镖|九霄仙贡镖,(D_Daily_Yunbiao_Car)
 
-#input ($Daily_Lingshou_ID) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--灵宠ID(开启命令代码查看),(D_Daily_Lingshou_ID)
-#select ($Daily_Lingshou_Interact) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--一键互动,跳过|互动五次,(D_Daily_Lingshou_Interact)
-#select ($Daily_Lingshou_Explore) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--一键探宝,跳过|探宝五次,(D_Daily_Lingshou_Explore)
-#select ($Daily_Lingshou_Train) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--一键修行,跳过|修行五次,(D_Daily_Lingshou_Train)
+#select ($Daily_Lingshou_Interact) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--互动,跳过|互动五次,(D_Daily_Lingshou_Interact)
+#select ($Daily_Lingshou_Explore) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--探宝,跳过|探宝五次,(D_Daily_Lingshou_Explore)
+#select ($Daily_Lingshou_Train) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--修行,跳过|修行五次,(D_Daily_Lingshou_Train)
 
 #select ($Daily_End) = <span style="color: #e30707; font-weight: bold;">结束时动作,跳过|挖矿|豪宅修炼,(D_Daily_End)
 
-#select ($Daily_Reset_Flag) = <span style="color: #e30707; font-weight: bold;">重置完成旗标(将视为新的一天),跳过|重置,跳过
+#select ($Daily_Reset_Flag) = <span style="color: #e30707; font-weight: bold;">将本次视为新的一天,跳过|重置,跳过
 #config
 //选项保存------------------------------------------------------------------------------
-@js WSStore.set('(Set_Daily_Buy_Skip_Ticket_ID)','(Daily_Buy_Skip_Ticket_ID)')
 @js WSStore.set('(Set_Daily_Buy_Skip_Ticket_100)','(Daily_Buy_Skip_Ticket_100)')
 @js WSStore.set('(Set_Daily_Buy_Pet_Ticket)','(Daily_Buy_Pet_Ticket)')
 
@@ -219,7 +349,6 @@
 @js WSStore.set('(Set_Daily_Yunbiao_Type)','(Daily_Yunbiao_Type)')
 @js WSStore.set('(Set_Daily_Yunbiao_Car)','(Daily_Yunbiao_Car)')
 
-@js WSStore.set('(Set_Daily_Lingshou_ID)','(Daily_Lingshou_ID)')
 @js WSStore.set('(Set_Daily_Lingshou_Interact)','(Daily_Lingshou_Interact)')
 @js WSStore.set('(Set_Daily_Lingshou_Explore)','(Daily_Lingshou_Explore)')
 @js WSStore.set('(Set_Daily_Lingshou_Train)','(Daily_Lingshou_Train)')
@@ -237,7 +366,8 @@ state stop
 @js ($Info_Last_Time_Hour) = WSStore.get('(Set_Info_Last_Time)').Hour
 @js ($Info_Last_Time_Min) = WSStore.get('(Set_Info_Last_Time)').Min
 @js ($Info_Last_Time_Sec) = WSStore.get('(Set_Info_Last_Time)').Sec
-@print 上次时间：(Info_Last_Time_Year)年,(Info_Last_Time_Month)月,(Info_Last_Time_Date)日,(Info_Last_Time_Hour)时,(Info_Last_Time_Min)分,(Info_Last_Time_Sec)秒
+@print ⌚ 上次时间：(Info_Last_Time_Year)年,(Info_Last_Time_Month)月,(Info_Last_Time_Date)日
+@print ⌚ 上次时间：(Info_Last_Time_Hour)时,(Info_Last_Time_Min)分,(Info_Last_Time_Sec)秒
 //
 @js ($Now_Year) = new Date().getFullYear()
 @js ($Now_Month) = new Date().getMonth() + 1
@@ -245,7 +375,8 @@ state stop
 @js ($Now_Hour) = new Date().getHours()
 @js ($Now_Min) = new Date().getMinutes()
 @js ($Now_Sec) = new Date().getSeconds()
-@print 当前时间：(Now_Year)年,(Now_Month)月,(Now_Date)日,(Now_Hour)时,(Now_Min)分,(Now_Sec)秒
+@print ⌚ 当前时间：(Now_Year)年,(Now_Month)月,(Now_Date)日
+@print ⌚ 当前时间：(Now_Hour)时,(Now_Min)分,(Now_Sec)秒
 //
 ($Info_Check_Cross5AM) = false
 [if] (Info_Last_Time_Year) != (Now_Year) || (Info_Last_Time_Month) != (Now_Month) || (Info_Last_Time_Date) != (Now_Date)
@@ -258,9 +389,9 @@ state stop
 [if] (Daily_Reset_Flag) == 重置
  ($Info_Check_Cross5AM) = true
 [if] (Info_Check_Cross5AM) == true
- tm 【新的一天，开始自动日常】
+ tm 📑 新的一天，开始自动日常
 [if] (Info_Check_Cross5AM) == false
- tm 【今日重复执行，跳过部份日常】
+ tm 📑 今日重复执行，跳过部份日常
 //
 info
 @wait 500
@@ -273,50 +404,32 @@ info
 @task 完成5次灵兽互动 ($Task_Check_Lingshou_Interact)/5
 @task 完成5次灵兽探宝 ($Task_Check_Lingshou_Explore)/5
 @task 完成3次灵兽修行 ($Task_Check_Lingshou_Train)/3
-//随从检查------------------------------------------------------------------------------
-@js window.M = window.M || {}, M.all = []
-($Now_Companion_Name1) = null
-($Now_Companion_Name2) = null
-($Now_Companion_Name3) = null
-($Now_Companion_ID1) = null
-($Now_Companion_ID2) = null
-($Now_Companion_ID3) = null
-//
-goto home
-@await 500
-@js M.els = document.querySelectorAll('.room-item')
-@js M.els.forEach((e, i) => (i > 0 && M.all.length < 3 && (M.t = (e.innerText || e.textContent || '').split('<')[0].split('[')[0].trim().split(' ').pop(), M.t && M.all.push(M.t))))
-@js ($Now_Companion_Name1) = M.all[0] || ""
-@js ($Now_Companion_Name2) = M.all[1] || ""
-@js ($Now_Companion_Name3) = M.all[2] || ""
-[if] (Now_Companion_Name1) != null && (Now_Companion_ID1) == null
- ($Now_Companion_ID1) = {r(Now_Companion_Name1)}?
+//随从指派------------------------------------------------------------------------------
+[if] (Now_Companion_ID1) != null
  rel (Now_Companion_ID1) wk
  rel (Now_Companion_ID1) diaoyu
  rel (Now_Companion_ID1) caiyao
- tm 已指派 (Now_Companion_Name1) 去工作
-[if] (Now_Companion_Name2) != null && (Now_Companion_ID2) == null
- ($Now_Companion_ID2) = {r(Now_Companion_Name2)}?
+ @print ⚒️ 已指派 (Now_Companion_Name1) 去工作
+[if] (Now_Companion_ID2) != null
  rel (Now_Companion_ID2) wk
  rel (Now_Companion_ID2) diaoyu
  rel (Now_Companion_ID2) caiyao
- tm 已指派 (Now_Companion_Name2) 去工作
-[if] (Now_Companion_Name3) != null && (Now_Companion_ID3) == null
- ($Now_Companion_ID3) = {r(Now_Companion_Name3)}?
+ @print ⚒️ 已指派 (Now_Companion_Name2) 去工作
+[if] (Now_Companion_ID3) != null
  rel (Now_Companion_ID3) wk
  rel (Now_Companion_ID3) diaoyu
  rel (Now_Companion_ID3) caiyao
- tm 已指派 (Now_Companion_Name3) 去工作
+ @print ⚒️ 已指派 (Now_Companion_Name3) 去工作
 //买扫荡符------------------------------------------------------------------------------
 [if] (Daily_Buy_Skip_Ticket_100) == 购买 && (Info_Check_Cross5AM) == true
  shop (Daily_Buy_Skip_Ticket_ID) 100
  @tip 扫荡符($Buy_Skip_Ticket_Check)上限。|商店($Buy_Skip_Ticket_Check)东西。|你($Buy_Skip_Ticket_Check)了
  [if] (Buy_Skip_Ticket_Check) == 不出售这个
-  tm 扫荡符购买失败，请检查ID输入是否正确，本日需手动购买。
+  tm ❌ 扫荡符购买失败，请检查ID输入是否正确，本日需手动购买。
  [if] (Buy_Skip_Ticket_Check) == 到达本日购买
-  @print 今日扫荡符购买已完成。
+  @print 🛒 今日扫荡符购买已完成。
  [if] (Buy_Skip_Ticket_Check) == 从商店里购买
-  @print 已成功购买100张扫荡符。
+  @print 🛒 已成功购买100张扫荡符。
 //师傅请安------------------------------------------------------------------------------
 [if] (Daily_Shitu_Greet) == 请安 && (Info_Check_Cross5AM) == true
  shitu greet
@@ -342,15 +455,20 @@ goto home
   @wait 500
   ask2 {r首席弟子}?
  @tip 每天请一次安就可以了，多了会惹人烦的。
+ @print 🏯 门派请安完成。
  @wait 1000
 //门派领取------------------------------------------------------------------------------
+//武当: 'WUDANG',峨眉: 'EMEI',少林: 'SHAOLIN',逍遥: 'XIAOYAO',华山: 'HUASHAN',丐帮: 'GAIBANG',杀手: 'SHASHOU'
 [if] (Daily_Job_Reward) == 领取 && (Info_Check_Cross5AM) == true
- goto fam2
+ @js window.fid = (typeof GameState !== "undefined" && GameState.score) ? GameState.score.family_py : ""
+ @js ($Now_Job_Py) = window.fid ? window.fid : ""
+ [if] (Now_Job_Py) == ""
+  @print ❌ 门派拼音提取失败(无法自动领取门派战奖励)
+ events (Now_Job_Py)_settle
  @wait 1000
- mp_reward {r门派后勤管理员%}?
- @wait 500
- mp_reward {r门派后勤管理员%}?
+ events (Now_Job_Py)_settle
  @tip 你今日的门派战击杀奖励次数已经领完了。|门派战利品需门派职位达到护法后领取。
+ @print 🏯 领取门派战奖励完成。
  @wait 1000
  sell all
  store all
@@ -384,12 +502,15 @@ goto home
    @wait 500
    search
    @tip 你今天已经搜索过蓬莱秘境，等明日潮位重置再来。
+   @print 🪂 蓬莱岛搜索已完成。
   [if] (Daily_Penglai_Put) != 跳过
    go east
    [if] (Daily_Penglai_Put) == 观山
     put_left
+    @print 🪂 蓬莱岛放入宝石(观山)
    [if] (Daily_Penglai_Put) == 临水
     put_right
+    @print 🪂 蓬莱岛放入宝石(临水)
    @wait 1000
 //战斗准备------------------------------------------------------------------------------
 [if] (Daily_Battle_Weapon) != null
@@ -435,16 +556,16 @@ goto home
   @liaoshang
   @wait 1000
   [if] (Now_Lingshou_Check) == 灵兽秘境次数已经
-   @print 今日灵兽秘境已完成。
+   @print 🐾 今日灵兽秘境已完成。
    [break]
   [if] (Now_Lingshou_Check) == 出战灵兽等级不足
-   tm 灵兽秘境设定难度过高，已跳过灵兽秘境。
+   tm ❌ 灵兽秘境设定难度过高，已跳过灵兽秘境。
    [break]
   [if] (Now_Lingshou_Check) == 无法进入秘境
-   tm 灵兽忙碌中，已跳过灵兽秘境。
+   tm ❌ 灵兽忙碌中，已跳过灵兽秘境。
    [break]
   [if] (Now_Lingshou_Check) == 休息完毕
-   tm 灵兽探宝未确认，已跳过灵兽秘境。
+   tm ❌ 灵兽探宝未确认，已跳过灵兽秘境。
    [break]
   cr over
 //自动运镖------------------------------------------------------------------------------
@@ -455,9 +576,7 @@ goto home
  ($Now_Yunbiao_Start) = true
 [if] (Info_Check_Yunbiao) >= 3 && (Daily_Yunbiao_Free) == 免费
  ($Now_Yunbiao_Start) = false
- @print 今日免费运镖已完成，跳过运镖流程。
 [if] (Info_Check_Yunbiao) == 5
- @print 今日元宝运镖已完成，跳过运镖流程。
  ($Now_Yunbiao_Start) = false
 [if] (Daily_Yunbiao_Auto) == 跳过
  ($Now_Yunbiao_Start) = false
@@ -505,22 +624,22 @@ goto home
   @wait 500
   //中断判断
   [if] (Now_Yunbiao_Start_Check) == 再一起来找我
-   tm 选择了高危镖，但未进行师徒组队，运镖流程取消。
+   tm ❌ 选择了高危镖，但未进行师徒组队，运镖流程取消。
    $stoppfm
    setting off_plist 0
    [break]
   [if] (Now_Yunbiao_Start_Check) == 仅限武仙
-   tm 选择了九霄仙贡镖，但你的境界未到达武仙，运镖流程取消。
+   tm ❌ 选择了九霄仙贡镖，但你的境界未到达武仙，运镖流程取消。
    $stoppfm
    setting off_plist 0
    [break]
   [if] (Daily_Yunbiao_Free) == 免费 && (Now_Yunbiao_Start_Check) == 10元宝
-   @print 运镖流程已完成，正常结束。
+   @print 🚛 运镖流程已完成，正常结束。
    $stoppfm
    setting off_plist 0
    [break]
   [if] (Daily_Yunbiao_Free) == 免费 && (Now_Yunbiao_Start_Check) == 20元宝
-   @print 运镖流程已完成，正常结束。
+   @print 🚛 运镖流程已完成，正常结束。
    $stoppfm
    setting off_plist 0
    [break]
@@ -564,6 +683,7 @@ goto home
      [break]
 //灵兽日常------------------------------------------------------------------------------
 [if] (Daily_Lingshou_Interact) == 互动五次 && (Task_Check_Lingshou_Interact) != 5
+ @print 🐾 尝试进行灵兽互动。
  lingshou jh explore (Daily_Lingshou_ID)
  @wait 1000
  lingshou jh train (Daily_Lingshou_ID)
@@ -579,6 +699,7 @@ goto home
  lingshou jh interact (Daily_Lingshou_ID)
  @wait 1000
 [if] (Daily_Lingshou_Explore) == 探宝五次 && (Task_Check_Lingshou_Explore) != 5
+ @print 🐾 尝试进行灵兽探宝。
  lingshou jh explore (Daily_Lingshou_ID)
  @wait 1000
  lingshou jh train (Daily_Lingshou_ID)
@@ -586,12 +707,27 @@ goto home
  lingshou jh explore (Daily_Lingshou_ID) all
  @wait 1000
 [if] (Daily_Lingshou_Train) == 修行五次 && (Task_Check_Lingshou_Train) != 3
+ @print 🐾 尝试进行灵兽修行。
  lingshou jh explore (Daily_Lingshou_ID)
  @wait 1000
  lingshou jh train (Daily_Lingshou_ID)
  @wait 1000
  lingshou jh train (Daily_Lingshou_ID) all
  @wait 1000
+//
+@toolbar tasks
+@wait 1000
+@task 完成5次灵兽互动 ($Task_Check_Lingshou_Interact)/5
+@task 完成5次灵兽探宝 ($Task_Check_Lingshou_Explore)/5
+@task 完成3次灵兽修行 ($Task_Check_Lingshou_Train)/3
+[if] (Task_Check_Lingshou_Interact) == 5 && (Task_Check_Lingshou_Explore) == 5 && (Task_Check_Lingshou_Train) == 3
+ @print 🐾 灵兽互动、探宝、修行已完成。
+[if] (Daily_Lingshou_Interact) == 互动五次 && (Task_Check_Lingshou_Interact) != 5
+ @print 🐾 灵兽互动未完成。
+[if] (Daily_Lingshou_Explore) == 探宝五次 && (Task_Check_Lingshou_Explore) != 5
+ @print 🐾 灵兽探宝未完成。
+[if] (Daily_Lingshou_Train) == 修行五次 && (Task_Check_Lingshou_Train) != 3
+ @print 🐾 灵兽修行未完成。
 //自动燕子坞------------------------------------------------------------------------------
 ($Now_Dungeon_Yanziwu_Check) = Null
 ($Now_Dungeon_Yanziwu_Finish) = false
@@ -602,10 +738,10 @@ goto home
  @tip 本次($Now_Dungeon_Yanziwu_Check)，共获得|没时间这么做|你的精力不够，无法扫荡副本。|副本燕子坞还没解锁!|你需要燕子坞(普通)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Yanziwu_Check) != 扫荡五次
   ($Now_Dungeon_Yanziwu_Finish) = false
-  tm 燕子坞扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 燕子坞扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Yanziwu_Check) == 扫荡五次
   ($Now_Dungeon_Yanziwu_Finish) = true
-  @print 燕子坞扫荡成功。
+  @print ✅ 燕子坞扫荡成功。
   sell all
   store all
   @wait 1000
@@ -615,10 +751,10 @@ goto home
  @tip 本次($Now_Dungeon_Yanziwu_Check)，共获得|没时间这么做|你的精力不够，无法扫荡副本。|副本燕子坞还没解锁!|你需要燕子坞(困难)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Yanziwu_Check) != 扫荡五次
   ($Now_Dungeon_Yanziwu_Finish) = false
-  tm 燕子坞扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 燕子坞扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Yanziwu_Check) == 扫荡五次
   ($Now_Dungeon_Yanziwu_Finish) = true
-  @print 燕子坞扫荡成功。
+  @print ✅ 燕子坞扫荡成功。
   sell all
   store all
   @wait 1000
@@ -636,12 +772,12 @@ goto home
 //结束存档------------------------------------------------------------------------------
 [if] (Daily_Dungeon_Yanziwu) == 跳过 || (Info_Check_Cross5AM) == false
  @js WSStore.set('(Set_Info_Last_Time)',{Year:'(Now_Year)',Month:'(Now_Month)',Date:'(Now_Date)',Hour:'(Now_Hour)',Min:'(Now_Min)',Sec:'(Now_Sec)'})
- tm 自动日常已结束。 
+ tm ✅ 自动日常已结束，已进行保存。
 [if] (Daily_Dungeon_Yanziwu) != 跳过 && (Info_Check_Cross5AM) == true
  [if] (Now_Dungeon_Yanziwu_Finish) == true
   @js WSStore.set('(Set_Info_Last_Time)',{Year:'(Now_Year)',Month:'(Now_Month)',Date:'(Now_Date)',Hour:'(Now_Hour)',Min:'(Now_Min)',Sec:'(Now_Sec)'})
-  tm 自动日常已结束。 
+  tm ✅ 自动日常已结束，已进行保存。
  [if] (Now_Dungeon_Yanziwu_Finish) == false
-  tm 自动日常已结束。因燕子坞扫荡未完成，今日完成旗标不进行更新。
+  tm ❌ 自动日常已结束。因燕子坞扫荡未完成，今日完成旗标不进行更新。
 //
 task wudao_road fin
