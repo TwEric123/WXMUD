@@ -4,7 +4,7 @@
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊。(服务器卡顿、断线造成的问题难以解决。)
 //本流程免费，旨在日常减负，请勿用作商业用途。
 //自动更新------------------------------------------------------------------------------
-($Now_Version) = s
+($Now_Version) = stop
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Task_Flow_Name) = A1日常
@@ -71,16 +71,20 @@
 @js for (var i = 0; i < window.parts.length; i++) { if (window.parts[i] !== "_confirm" && window.parts[i] !== "shop" && window.parts[i] !== "0" && window.parts[i].length > 5) { window.realId = window.parts[i].trim(); break; } }
 
 @js ($Dom_Skip_Ticket_ID) = (window.realId && window.realId !== "null") ? window.realId : ""
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//天师
 @js window.shopTitles = document.querySelectorAll('.shop-item-title')
 @js window.targetTitle = undefined
 @js for (var i = 0; i < window.shopTitles.length; i++) { if (window.shopTitles[i].innerText.indexOf('天师符') !== -1) { window.targetTitle = window.shopTitles[i]; break; } }
+
+@js window.parentCard = window.targetTitle ? (window.targetTitle.parentElement.parentElement || window.targetTitle.parentElement) : null
+@js window.buyBtn = window.parentCard ? window.parentCard.querySelector('[cmd*="_confirm shop"]') : null
+@js window.shopCmd = window.buyBtn ? window.buyBtn.getAttribute('cmd') : ""
 
 @js window.parts = window.shopCmd ? window.shopCmd.split(' ') : []; window.realId = ""
 @js for (var i = 0; i < window.parts.length; i++) { if (window.parts[i] !== "_confirm" && window.parts[i] !== "shop" && window.parts[i] !== "0" && window.parts[i].length > 5) { window.realId = window.parts[i].trim(); break; } }
 
 @js ($Dom_Relive_Ticket_ID) = (window.realId && window.realId !== "null") ? window.realId : ""
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//
 @js window.btn = document.querySelector('.dialog-close'); window.btn && window.btn.click()
 @await (Dom_Load_Time)
 //出战中灵兽ID
@@ -154,6 +158,11 @@
  @print 🛒 扫荡符|ID:(Dom_Skip_Ticket_ID)
 [if] (Dom_Skip_Ticket_ID) == null
  @print ❌ 扫荡符|ID:侦测失败
+
+[if] (Dom_Relive_Ticket_ID) != null
+ @print 🛒 天师符|ID:(Dom_Relive_Ticket_ID)
+[if] (Dom_Relive_Ticket_ID) == null
+ @print ❌ 天师符|ID:侦测失败
 
 [if] (Dom_Lingshou_ID) != null
  @print 🐾 灵兽:(Dom_Lingshou_Name)
@@ -305,7 +314,7 @@
 #input ($Daily_Lingshou_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--出战中灵兽ID,(Dom_Lingshou_ID)
 
 #select ($Daily_Buy_Skip_Ticket_100) = <span style="color: #14b53a; font-weight: bold;">每日购买--扫荡符,跳过|购买,(D_Daily_Buy_Skip_Ticket_100)
-#select ($Daily_Buy_Skip_Ticket_100) = <span style="color: #14b53a; font-weight: bold;">每日购买--天师符,跳过|购买,(D_Daily_Buy_Relive_Ticket_15)
+#select ($Daily_Buy_Relive_Ticket_15) = <span style="color: #14b53a; font-weight: bold;">每日购买--天师符,跳过|购买,(D_Daily_Buy_Relive_Ticket_15)
 #select ($Daily_Buy_Pet_Ticket) = <span style="color: #14b53a; font-weight: bold;">每日购买--驭兽符,跳过|购买,(D_Daily_Buy_Pet_Ticket)
 
 #select ($Daily_Companion_Work) = <span style="color: #00CC00; font-weight: bold;">随从--发呆检测(矿>鱼>药),跳过|自动指派,(D_Daily_Companion_Work)
@@ -436,7 +445,9 @@ info
  rel (Now_Companion_ID3) diaoyu
  rel (Now_Companion_ID3) caiyao
  @print ⚒️ 已指派 (Now_Companion_Name3) 去工作
+@wait 500
 //买扫荡符------------------------------------------------------------------------------
+($Buy_Skip_Ticket_Check) = null
 [if] (Daily_Buy_Skip_Ticket_100) == 购买 && (Info_Check_Cross5AM) == true
  shop (Daily_Buy_Skip_Ticket_ID) 100
  @tip 扫荡符($Buy_Skip_Ticket_Check)上限。|商店($Buy_Skip_Ticket_Check)东西。|你($Buy_Skip_Ticket_Check)了
@@ -446,16 +457,19 @@ info
   @print 🛒 今日扫荡符购买已完成。
  [if] (Buy_Skip_Ticket_Check) == 从商店里购买
   @print 🛒 已成功购买100张扫荡符。
+@wait 500
 //买天师符------------------------------------------------------------------------------
+($Buy_Relive_Ticket_Check) = null
 [if] (Daily_Buy_Relive_Ticket_15) == 购买 && (Info_Check_Cross5AM) == true
  shop (Daily_Buy_Relive_Ticket_ID) 15
- @tip 扫荡符($Buy_Skip_Ticket_Check)上限。|商店($Buy_Skip_Ticket_Check)东西。|你($Buy_Skip_Ticket_Check)了
- [if] (Buy_Skip_Ticket_Check) == 不出售这个
+ @tip 扫荡符($Buy_Relive_Ticket_Check)上限。|商店($Buy_Relive_Ticket_Check)东西。|你($Buy_Relive_Ticket_Check)了
+ [if] (Buy_Relive_Ticket_Check) == 不出售这个
   tm ❌ 天师符购买失败，请检查ID输入是否正确，本日需手动购买。
- [if] (Buy_Skip_Ticket_Check) == 到达本日购买
+ [if] (Buy_Relive_Ticket_Check) == 到达本日购买
   @print 🛒 今日天师符购买已完成。
- [if] (Buy_Skip_Ticket_Check) == 从商店里购买
+ [if] (Buy_Relive_Ticket_Check) == 从商店里购买
   @print 🛒 已成功购买15张天师符。
+@wait 500
 //师傅请安------------------------------------------------------------------------------
 [if] (Daily_Shitu_Greet) == 请安 && (Info_Check_Cross5AM) == true
  shitu greet
