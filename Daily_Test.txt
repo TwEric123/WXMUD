@@ -462,7 +462,7 @@ info
 ($Buy_Relive_Ticket_Check) = null
 [if] (Daily_Buy_Relive_Ticket_15) == 购买 && (Info_Check_Cross5AM) == true
  shop (Daily_Buy_Relive_Ticket_ID) 15
- @tip 扫荡符($Buy_Relive_Ticket_Check)上限。|商店($Buy_Relive_Ticket_Check)东西。|你($Buy_Relive_Ticket_Check)了
+ @tip 天师符($Buy_Relive_Ticket_Check)上限。|商店($Buy_Relive_Ticket_Check)东西。|你($Buy_Relive_Ticket_Check)了
  [if] (Buy_Relive_Ticket_Check) == 不出售这个
   tm ❌ 天师符购买失败，请检查ID输入是否正确，本日需手动购买。
  [if] (Buy_Relive_Ticket_Check) == 到达本日购买
