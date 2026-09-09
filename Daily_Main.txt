@@ -4,7 +4,7 @@
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊。(服务器卡顿、断线造成的问题难以解决。)
 //本流程免费，旨在日常减负，请勿用作商业用途。
 //自动更新------------------------------------------------------------------------------
-($Now_Version) = 2026090901
+($Now_Version) = 2026090902
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Task_Flow_Name) = A1日常
@@ -520,6 +520,10 @@ info
  $startpfm
  @wait 1000
 //灵兽秘境------------------------------------------------------------------------------
+lingshou jh explore (Daily_Lingshou_ID)
+@wait 1000
+lingshou jh train (Daily_Lingshou_ID)
+@wait 1000
 [if] (Daily_Lingshou_Trial) != 跳过 && (Task_Check_Lingshou_Trial) != 2
  ($Now_Lingshou_Check) = null
  ($Now_Lingshou_Trial) = null
@@ -552,7 +556,7 @@ info
  //
  [while] true
   lingshou trial (Lingshou_Trial) (Lingshou_Trial_Difficulty) confirm
-  @tip 试炼影兽轰然散去|今日($Now_Lingshou_Check)用完|你的($Now_Lingshou_Check)，挑战|暂时($Now_Lingshou_Check)。|已经($Now_Lingshou_Check)，等待你点击“灵兽探宝”确认恢复。
+  @tip 试炼影兽轰然散去|今日($Now_Lingshou_Check)用完|你的($Now_Lingshou_Check)，挑战|暂时($Now_Lingshou_Check)。|已经($Now_Lingshou_Check)，等待你点击“灵兽探宝”确认恢复。|已经($Now_Lingshou_Check)，奖励等待你点击“灵兽探宝”完成结算。
   @liaoshang
   @wait 1000
   [if] (Now_Lingshou_Check) == 灵兽秘境次数已经
@@ -565,6 +569,9 @@ info
    tm ❌ 灵兽忙碌中，已跳过灵兽秘境。
    [break]
   [if] (Now_Lingshou_Check) == 休息完毕
+   tm ❌ 灵兽恢复未确认，已跳过灵兽秘境。
+   [break]
+  [if] (Now_Lingshou_Check) == 探宝归来
    tm ❌ 灵兽探宝未确认，已跳过灵兽秘境。
    [break]
   cr over
