@@ -1,10 +1,10 @@
-//流程更新日期：2026/09/09  仅支持内置插件WSMUD2 26.3.5
+//流程更新日期：2026/09/11  仅支持内置插件WSMUD2 26.3.5
 //1.服务器卡顿、延迟可能造成流程判断异常，请自行注意。2.角色改名后需重新设置。3.灵兽秘境中自动出招会失效，请注意别被打死。
 //4.黄金不够会造成购买扫荡符、运镖等流程卡住，请自行备好充足黄金。5.背包空间不足可能会产生问题，请自行注意背包空间。
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊。(服务器卡顿、断线造成的问题难以解决。)
 //本流程免费，旨在日常减负，请勿用作商业用途。
-//自动更新------------------------------------------------------------------------------
-($Now_Version) = 2026090903
+//自动更新------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+($Now_Version) = 2026091101
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Task_Flow_Name) = A1日常
@@ -45,7 +45,7 @@
    [exit]
   [else]
    @print ❌ 版本号获取成功，但流程文件 (Net_Main_Name).txt 不存在或下载失败！
-//ID自动侦测------------------------------------------------------------------------------
+//ID自动侦测------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 @js window.btn = document.querySelector('.dialog-close'); window.btn && window.btn.click()
 @await (Dom_Load_Time)
 //黄金扫荡符/天师符ID
@@ -190,207 +190,279 @@
  @print 🧍 (Dom_Companion_Name3)|ID:(Dom_Companion_ID3)
 [if] (Dom_Companion_ID3) == null
  @print ❌ 随从3|ID:侦测失败
-//存档名宣告------------------------------------------------------------------------------
-($Set_Daily_Buy_Skip_Ticket_100) = (:name)Daily_Buy_Skip_Ticket_100
-($Set_Daily_Buy_Relive_Ticket_15) = (:name)Daily_Buy_Relive_Ticket_15
-($Set_Daily_Buy_Pet_Ticket) = (:name)Daily_Buy_Pet_Ticket
-
-($Set_Daily_Companion_Work) = (:name)Daily_Companion_Work
-
-($Set_Daily_Shitu_Greet) = (:name)Daily_Shitu_Greet
-($Set_Daily_Job_Greet) = (:name)Daily_Job_Greet
-($Set_Daily_Job_Reward) = (:name)Daily_Job_Reward
-
-($Set_Daily_Dungeon_Yanziwu) = (:name)Daily_Dungeon_Yanziwu
-
-($Set_Daily_Penglai_Search) = (:name)Daily_Penglai_Search
-($Set_Daily_Penglai_Put) = (:name)Daily_Penglai_Put
-
-($Set_Daily_Battle_Weapon) = (:name)Daily_Battle_Weapon
-($Set_Daily_Battle_Auto) = (:name)Daily_Battle_Auto
-
-($Set_Daily_Lingshou_Trial) = (:name)Daily_Lingshou_Trial
-($Set_Daily_Lingshou_Trial_Difficulty) = (:name)Daily_Lingshou_Trial_Difficulty
-
-($Set_Daily_Yunbiao_Auto) = (:name)Daily_Yunbiao_Auto
-($Set_Daily_Yunbiao_Free) = (:name)Daily_Yunbiao_Free
-($Set_Daily_Yunbiao_Type) = (:name)Daily_Yunbiao_Type
-($Set_Daily_Yunbiao_Car) = (:name)Daily_Yunbiao_Car
-
-($Set_Daily_Lingshou_Interact) = (:name)Daily_Lingshou_Interact
-($Set_Daily_Lingshou_Explore) = (:name)Daily_Lingshou_Explore
-($Set_Daily_Lingshou_Train) = (:name)Daily_Lingshou_Train
-
-($Set_Daily_End) = (:name)Daily_End
-//读取存档设定------------------------------------------------------------------------------
-@js ($D_Daily_Buy_Skip_Ticket_100) = WSStore.get('(Set_Daily_Buy_Skip_Ticket_100)')
-@js ($D_Daily_Buy_Relive_Ticket_15) = WSStore.get('(Set_Daily_Buy_Relive_Ticket_15)')
-@js ($D_Daily_Buy_Pet_Ticket) = WSStore.get('(Set_Daily_Buy_Pet_Ticket)')
-
-@js ($D_Daily_Companion_Work) = WSStore.get('(Set_Daily_Companion_Work)')
-
-@js ($D_Daily_Shitu_Greet) = WSStore.get('(Set_Daily_Shitu_Greet)')
-@js ($D_Daily_Job_Greet) = WSStore.get('(Set_Daily_Job_Greet)')
-@js ($D_Daily_Job_Reward) = WSStore.get('(Set_Daily_Job_Reward)')
-
-@js ($D_Daily_Dungeon_Yanziwu) = WSStore.get('(Set_Daily_Dungeon_Yanziwu)')
-
-@js ($D_Daily_Penglai_Search) = WSStore.get('(Set_Daily_Penglai_Search)')
-@js ($D_Daily_Penglai_Put) = WSStore.get('(Set_Daily_Penglai_Put)')
-
-@js ($D_Daily_Battle_Weapon) = WSStore.get('(Set_Daily_Battle_Weapon)')
-@js ($D_Daily_Battle_Auto) = WSStore.get('(Set_Daily_Battle_Auto)')
-
-@js ($D_Daily_Lingshou_Trial) = WSStore.get('(Set_Daily_Lingshou_Trial)')
-@js ($D_Daily_Lingshou_Trial_Difficulty) = WSStore.get('(Set_Daily_Lingshou_Trial_Difficulty)')
-
-@js ($D_Daily_Yunbiao_Auto) = WSStore.get('(Set_Daily_Yunbiao_Auto)')
-@js ($D_Daily_Yunbiao_Free) = WSStore.get('(Set_Daily_Yunbiao_Free)')
-@js ($D_Daily_Yunbiao_Type) = WSStore.get('(Set_Daily_Yunbiao_Type)')
-@js ($D_Daily_Yunbiao_Car) = WSStore.get('(Set_Daily_Yunbiao_Car)')
-
-@js ($D_Daily_Lingshou_Interact) = WSStore.get('(Set_Daily_Lingshou_Interact)')
-@js ($D_Daily_Lingshou_Explore) = WSStore.get('(Set_Daily_Lingshou_Explore)')
-@js ($D_Daily_Lingshou_Train) = WSStore.get('(Set_Daily_Lingshou_Train)')
-
-@js ($D_Daily_End) = WSStore.get('(Set_Daily_End)')
-//预设值------------------------------------------------------------------------------
-[if] (D_Daily_Buy_Skip_Ticket_100) == null
- ($D_Daily_Buy_Skip_Ticket_100) = 跳过
-[if] (D_Daily_Buy_Relive_Ticket_15) == null
- ($D_Daily_Buy_Relive_Ticket_15) = 跳过
-[if] (D_Daily_Buy_Pet_Ticket) == null
- ($D_Daily_Buy_Pet_Ticket) = 跳过
-
-[if] (D_Daily_Companion_Work) == null
- ($D_Daily_Companion_Work) = 自动指派
-
-[if] (D_Daily_Shitu_Greet) == null
- ($D_Daily_Shitu_Greet) = 跳过
-[if] (D_Daily_Job_Greet) == null
- ($D_Daily_Job_Greet) = 跳过
-[if] (D_Daily_Job_Reward) == null
- ($D_Daily_Job_Reward) = 跳过
-
-[if] (D_Daily_Dungeon_Yanziwu) == null
- ($D_Daily_Dungeon_Yanziwu) = 跳过
-
-[if] (D_Daily_Penglai_Search) == null
- ($D_Daily_Penglai_Search) = 跳过
-[if] (D_Daily_Penglai_Put) == null
- ($D_Daily_Penglai_Put) = 跳过
-
-[if] (D_Daily_Battle_Weapon) == null
- ($D_Daily_Battle_Weapon) = 龙纹剑
-[if] (D_Daily_Battle_Auto) == null
- ($D_Daily_Battle_Auto) = 自动出招
-
-[if] (D_Daily_Lingshou_Trial) == null
- ($D_Daily_Lingshou_Trial) = 远古
-[if] (D_Daily_Lingshou_Trial_Difficulty) == null
- ($D_Daily_Lingshou_Trial_Difficulty) = 普通
-
-[if] (D_Daily_Yunbiao_Auto) == null
- ($D_Daily_Yunbiao_Auto) = 跳过
-[if] (D_Daily_Yunbiao_Free) == null
- ($D_Daily_Yunbiao_Free) = 免费
-[if] (D_Daily_Yunbiao_Type) == null
- ($D_Daily_Yunbiao_Type) = 高危
-[if] (D_Daily_Yunbiao_Car) == null
- ($D_Daily_Yunbiao_Car) = 皇家贡镖
-
-[if] (D_Daily_Lingshou_Interact) == null
- ($D_Daily_Lingshou_Interact) = 跳过
-[if] (D_Daily_Lingshou_Explore) == null
- ($D_Daily_Lingshou_Explore) = 跳过
-[if] (D_Daily_Lingshou_Train) == null
- ($D_Daily_Lingshou_Train) = 跳过
-
-[if] (D_Daily_End) == null
- ($D_Daily_End) = 挖矿
-//选项设定------------------------------------------------------------------------------
+//存档名宣告------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+($Save_Daily_Buy_Skip_Ticket_100) = (:name)Daily_Buy_Skip_Ticket_100
+($Save_Daily_Buy_Relive_Ticket_15) = (:name)Daily_Buy_Relive_Ticket_15
+($Save_Daily_Buy_Pet_Ticket) = (:name)Daily_Buy_Pet_Ticket
+($Save_Daily_Companion_Work) = (:name)Daily_Companion_Work
+($Save_Daily_Shitu_Greet) = (:name)Daily_Shitu_Greet
+($Save_Daily_Job_Greet) = (:name)Daily_Job_Greet
+($Save_Daily_Job_Reward) = (:name)Daily_Job_Reward
+($Save_Daily_Dungeon_Yanziwu) = (:name)Daily_Dungeon_Yanziwu
+($Save_Daily_Penglai_Search) = (:name)Daily_Penglai_Search
+($Save_Daily_Penglai_Put) = (:name)Daily_Penglai_Put
+($Save_Daily_Battle_Weapon) = (:name)Daily_Battle_Weapon
+($Save_Daily_Battle_Auto) = (:name)Daily_Battle_Auto
+($Save_Daily_Lingshou_Trial) = (:name)Daily_Lingshou_Trial
+($Save_Daily_Lingshou_Trial_Difficulty) = (:name)Daily_Lingshou_Trial_Difficulty
+($Save_Daily_Yunbiao_Auto) = (:name)Daily_Yunbiao_Auto
+($Save_Daily_Yunbiao_Free) = (:name)Daily_Yunbiao_Free
+($Save_Daily_Yunbiao_Type) = (:name)Daily_Yunbiao_Type
+($Save_Daily_Yunbiao_Car) = (:name)Daily_Yunbiao_Car
+($Save_Daily_Lingshou_Interact) = (:name)Daily_Lingshou_Interact
+($Save_Daily_Lingshou_Explore) = (:name)Daily_Lingshou_Explore
+($Save_Daily_Lingshou_Train) = (:name)Daily_Lingshou_Train
+($Save_Daily_End) = (:name)Daily_End
+//读取存档------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@js ($Load_Daily_Buy_Skip_Ticket_100) = WSStore.get('(Save_Daily_Buy_Skip_Ticket_100)')
+@js ($Load_Daily_Buy_Relive_Ticket_15) = WSStore.get('(Save_Daily_Buy_Relive_Ticket_15)')
+@js ($Load_Daily_Buy_Pet_Ticket) = WSStore.get('(Save_Daily_Buy_Pet_Ticket)')
+@js ($Load_Daily_Companion_Work) = WSStore.get('(Save_Daily_Companion_Work)')
+@js ($Load_Daily_Shitu_Greet) = WSStore.get('(Save_Daily_Shitu_Greet)')
+@js ($Load_Daily_Job_Greet) = WSStore.get('(Save_Daily_Job_Greet)')
+@js ($Load_Daily_Job_Reward) = WSStore.get('(Save_Daily_Job_Reward)')
+@js ($Load_Daily_Dungeon_Yanziwu) = WSStore.get('(Save_Daily_Dungeon_Yanziwu)')
+@js ($Load_Daily_Penglai_Search) = WSStore.get('(Save_Daily_Penglai_Search)')
+@js ($Load_Daily_Penglai_Put) = WSStore.get('(Save_Daily_Penglai_Put)')
+@js ($Load_Daily_Battle_Weapon) = WSStore.get('(Save_Daily_Battle_Weapon)')
+@js ($Load_Daily_Battle_Auto) = WSStore.get('(Save_Daily_Battle_Auto)')
+@js ($Load_Daily_Lingshou_Trial) = WSStore.get('(Save_Daily_Lingshou_Trial)')
+@js ($Load_Daily_Lingshou_Trial_Difficulty) = WSStore.get('(Save_Daily_Lingshou_Trial_Difficulty)')
+@js ($Load_Daily_Yunbiao_Auto) = WSStore.get('(Save_Daily_Yunbiao_Auto)')
+@js ($Load_Daily_Yunbiao_Free) = WSStore.get('(Save_Daily_Yunbiao_Free)')
+@js ($Load_Daily_Yunbiao_Type) = WSStore.get('(Save_Daily_Yunbiao_Type)')
+@js ($Load_Daily_Yunbiao_Car) = WSStore.get('(Save_Daily_Yunbiao_Car)')
+@js ($Load_Daily_Lingshou_Interact) = WSStore.get('(Save_Daily_Lingshou_Interact)')
+@js ($Load_Daily_Lingshou_Explore) = WSStore.get('(Save_Daily_Lingshou_Explore)')
+@js ($Load_Daily_Lingshou_Train) = WSStore.get('(Save_Daily_Lingshou_Train)')
+@js ($Load_Daily_End) = WSStore.get('(Save_Daily_End)')
+//存档编辑------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+[if] (Load_Daily_Buy_Skip_Ticket_100) == null || (Load_Daily_Buy_Skip_Ticket_100) == 跳过
+ ($Load_Daily_Buy_Skip_Ticket_100) = ❌跳过
+[if] (Load_Daily_Buy_Skip_Ticket_100) == 购买
+ ($Load_Daily_Buy_Skip_Ticket_100) = 🛒购买
+[if] (Load_Daily_Buy_Relive_Ticket_15) == null || (Load_Daily_Buy_Relive_Ticket_15) == 跳过
+ ($Load_Daily_Buy_Relive_Ticket_15) = ❌跳过
+[if] (Load_Daily_Buy_Relive_Ticket_15) == 购买
+ ($Load_Daily_Buy_Relive_Ticket_15) = 🛒购买
+[if] (Load_Daily_Buy_Pet_Ticket) == null || (Load_Daily_Buy_Pet_Ticket) == 跳过
+ ($Load_Daily_Buy_Pet_Ticket) = ❌跳过
+[if] (Load_Daily_Buy_Pet_Ticket) == 购买
+ ($Load_Daily_Buy_Pet_Ticket) = 🛒购买
+[if] (Load_Daily_Companion_Work) == null || (Load_Daily_Companion_Work) == 跳过
+ ($Load_Daily_Companion_Work) = ❌跳过
+[if] (Load_Daily_Companion_Work) == 自动
+ ($Load_Daily_Companion_Work) = ⚡自动
+[if] (Load_Daily_Shitu_Greet) == null || (Load_Daily_Shitu_Greet) == 跳过
+ ($Load_Daily_Shitu_Greet) = ❌跳过
+[if] (Load_Daily_Shitu_Greet) == 请安
+ ($Load_Daily_Shitu_Greet) = 🙏请安
+[if] (Load_Daily_Job_Greet) == null || (Load_Daily_Job_Greet) == 跳过
+ ($Load_Daily_Job_Greet) = ❌跳过
+[if] (Load_Daily_Job_Greet) == 请安
+ ($Load_Daily_Job_Greet) = 🙏请安
+[if] (Load_Daily_Job_Reward) == null || (Load_Daily_Job_Reward) == 跳过
+ ($Load_Daily_Job_Reward) = ❌跳过
+[if] (Load_Daily_Job_Reward) == 领取
+ ($Load_Daily_Job_Reward) = 🎁领取
+[if] (Load_Daily_Dungeon_Yanziwu) == null || (Load_Daily_Dungeon_Yanziwu) == 跳过
+ ($Load_Daily_Dungeon_Yanziwu) = ❌跳过
+[if] (Load_Daily_Dungeon_Yanziwu) == 普通
+ ($Load_Daily_Dungeon_Yanziwu) = 🟢普通
+[if] (Load_Daily_Dungeon_Yanziwu) == 困难
+ ($Load_Daily_Dungeon_Yanziwu) = 🔴困难
+[if] (Load_Daily_Penglai_Search) == null || (Load_Daily_Penglai_Search) == 跳过
+ ($Load_Daily_Penglai_Search) = ❌跳过
+[if] (Load_Daily_Penglai_Search) == 搜索
+ ($Load_Daily_Penglai_Search) = 🔍搜索
+[if] (Load_Daily_Penglai_Put) == null || (Load_Daily_Penglai_Put) == 跳过
+ ($Load_Daily_Penglai_Put) = ❌跳过
+[if] (Load_Daily_Penglai_Put) == 观山
+ ($Load_Daily_Penglai_Put) = ⛰️观山
+[if] (Load_Daily_Penglai_Put) == 临水
+ ($Load_Daily_Penglai_Put) = 🌊临水
+[if] (Load_Daily_Battle_Weapon) == null
+ ($Load_Daily_Battle_Weapon) = 龙纹剑
+[if] (Load_Daily_Battle_Auto) == null || (Load_Daily_Battle_Auto) == 跳过
+ ($Load_Daily_Battle_Auto) = ❌跳过
+[if] (Load_Daily_Battle_Auto) == 自动
+ ($Load_Daily_Battle_Auto) = ⚔️自动
+[if] (Load_Daily_Lingshou_Trial) == null || (Load_Daily_Lingshou_Trial) == 跳过
+ ($Load_Daily_Lingshou_Trial) = ❌跳过
+[if] (Load_Daily_Lingshou_Trial) == 兽魂
+ ($Load_Daily_Lingshou_Trial) = 👻兽魂
+[if] (Load_Daily_Lingshou_Trial) == 兽装
+ ($Load_Daily_Lingshou_Trial) = 🧥兽装
+[if] (Load_Daily_Lingshou_Trial) == 血脉
+ ($Load_Daily_Lingshou_Trial) = 🩸血脉
+[if] (Load_Daily_Lingshou_Trial) == 神通
+ ($Load_Daily_Lingshou_Trial) = ✨神通
+[if] (Load_Daily_Lingshou_Trial) == 成长
+ ($Load_Daily_Lingshou_Trial) = 🌱成长
+[if] (Load_Daily_Lingshou_Trial) == 远古
+ ($Load_Daily_Lingshou_Trial) = 🏛️远古
+[if] (Load_Daily_Lingshou_Trial_Difficulty) == null || (Load_Daily_Lingshou_Trial_Difficulty) == 普通
+ ($Load_Daily_Lingshou_Trial_Difficulty) = ⚪普通
+[if] (Load_Daily_Lingshou_Trial_Difficulty) == 困难
+ ($Load_Daily_Lingshou_Trial_Difficulty) = 🟢困难
+[if] (Load_Daily_Lingshou_Trial_Difficulty) == 噩梦
+ ($Load_Daily_Lingshou_Trial_Difficulty) = 🔵噩梦
+[if] (Load_Daily_Lingshou_Trial_Difficulty) == 地狱
+ ($Load_Daily_Lingshou_Trial_Difficulty) = 🟡地狱
+[if] (Load_Daily_Lingshou_Trial_Difficulty) == 炼狱
+ ($Load_Daily_Lingshou_Trial_Difficulty) = 🟠炼狱
+[if] (Load_Daily_Lingshou_Trial_Difficulty) == 深渊
+ ($Load_Daily_Lingshou_Trial_Difficulty) = 🔴深渊
+[if] (Load_Daily_Yunbiao_Auto) == null || (Load_Daily_Yunbiao_Auto) == 跳过
+ ($Load_Daily_Yunbiao_Auto) = ❌跳过
+[if] (Load_Daily_Yunbiao_Auto) == 开启
+ ($Load_Daily_Yunbiao_Auto) = 🚛开启
+[if] (Load_Daily_Yunbiao_Free) == null || (Load_Daily_Yunbiao_Free) == 免费
+ ($Load_Daily_Yunbiao_Free) = 🎁免费
+[if] (Load_Daily_Yunbiao_Free) == 元宝
+ ($Load_Daily_Yunbiao_Free) = 💸元宝
+[if] (Load_Daily_Yunbiao_Type) == null || (Load_Daily_Yunbiao_Type) == 安全
+ ($Load_Daily_Yunbiao_Type) = 🧍安全
+[if] (Load_Daily_Yunbiao_Type) == 高危
+ ($Load_Daily_Yunbiao_Type) = 🧑‍🤝‍🧑高危
+[if] (Load_Daily_Yunbiao_Car) == null || (Load_Daily_Yunbiao_Car) == 皇家贡镖
+ ($Load_Daily_Yunbiao_Car) = 👑皇家贡镖
+[if] (Load_Daily_Yunbiao_Car) == 普通民镖
+ ($Load_Daily_Yunbiao_Car) = 📦普通民镖
+[if] (Load_Daily_Yunbiao_Car) == 商行商标
+ ($Load_Daily_Yunbiao_Car) = 🏪商行商标
+[if] (Load_Daily_Yunbiao_Car) == 珍宝玉镖
+ ($Load_Daily_Yunbiao_Car) = 💎珍宝玉镖
+[if] (Load_Daily_Yunbiao_Car) == 九霄仙贡镖
+ ($Load_Daily_Yunbiao_Car) = 🌟九霄仙贡镖
+[if] (Load_Daily_Lingshou_Interact) == null || (Load_Daily_Lingshou_Interact) == 跳过
+ ($Load_Daily_Lingshou_Interact) = ❌跳过
+[if] (Load_Daily_Lingshou_Interact) == 互动
+ ($Load_Daily_Lingshou_Interact) = 🐾互动
+[if] (Load_Daily_Lingshou_Explore) == null || (Load_Daily_Lingshou_Explore) == 跳过
+ ($Load_Daily_Lingshou_Explore) = ❌跳过
+[if] (Load_Daily_Lingshou_Explore) == 探宝
+ ($Load_Daily_Lingshou_Explore) = 🗺️探宝
+[if] (Load_Daily_Lingshou_Train) == null || (Load_Daily_Lingshou_Train) == 跳过
+ ($Load_Daily_Lingshou_Train) = ❌跳过
+[if] (Load_Daily_Lingshou_Train) == 修行
+ ($Load_Daily_Lingshou_Train) = 🧘修行
+[if] (Load_Daily_End) == null || (Load_Daily_End) == 挖矿
+ ($Load_Daily_End) = ⛏️挖矿
+[if] (Load_Daily_End) == 跳过
+ ($Load_Daily_End) = ❌跳过
+[if] (Load_Daily_End) == 豪宅修炼
+ ($Load_Daily_End) = 🧘修炼
+//选项设定------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #input ($Daily_Buy_Skip_Ticket_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--扫荡符ID,(Dom_Skip_Ticket_ID)
 #input ($Daily_Buy_Relive_Ticket_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--天师符ID,(Dom_Relive_Ticket_ID)
 #input ($Daily_Lingshou_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--出战中灵兽ID,(Dom_Lingshou_ID)
-
-#select ($Daily_Buy_Skip_Ticket_100) = <span style="color: #14b53a; font-weight: bold;">每日购买--扫荡符,跳过|购买,(D_Daily_Buy_Skip_Ticket_100)
-#select ($Daily_Buy_Relive_Ticket_15) = <span style="color: #14b53a; font-weight: bold;">每日购买--天师符,跳过|购买,(D_Daily_Buy_Relive_Ticket_15)
-#select ($Daily_Buy_Pet_Ticket) = <span style="color: #14b53a; font-weight: bold;">每日购买--驭兽符,跳过|购买,(D_Daily_Buy_Pet_Ticket)
-
-#select ($Daily_Companion_Work) = <span style="color: #00CC00; font-weight: bold;">随从--发呆检测(矿>鱼>药),跳过|自动指派,(D_Daily_Companion_Work)
-
-#select ($Daily_Shitu_Greet) = <span style="color: #13339e; font-weight: bold;">日常--师徒请安,跳过|请安,(D_Daily_Shitu_Greet)
-#select ($Daily_Job_Greet) = <span style="color: #13339e; font-weight: bold;">日常--门派请安,跳过|请安,(D_Daily_Job_Greet)
-#select ($Daily_Job_Reward) = <span style="color: #13339e; font-weight: bold;">日常--门派物资,跳过|领取,(D_Daily_Job_Reward)
-
-#select ($Daily_Dungeon_Yanziwu) = <span style="color: #990099; font-weight: bold;">副本--每日燕子坞扫荡,跳过|普通五次|困难五次,(D_Daily_Dungeon_Yanziwu)
-
-#select ($Daily_Penglai_Search) = <span style="color: #0f9994; font-weight: bold;">蓬莱岛--搜索,跳过|搜索,(D_Daily_Penglai_Search)
-#select ($Daily_Penglai_Put) = <span style="color: #0f9994; font-weight: bold;">蓬莱岛--观山/临水,跳过|观山|临水,(D_Daily_Penglai_Put)
-
-#input ($Daily_Battle_Weapon) = <span style="color: #990f59; font-weight: bold;">战斗--使用武器(灵兽秘境、高危镖),(D_Daily_Battle_Weapon)
-#select ($Daily_Battle_Auto) = <span style="color: #990f59; font-weight: bold;">战斗--自动出招,跳过|自动出招,(D_Daily_Battle_Auto)
-
-#select ($Daily_Lingshou_Trial) = <span style="color: #876d0c; font-weight: bold;">灵兽秘境--探索,跳过|兽魂|兽装|血脉|神通|成长|远古,(D_Daily_Lingshou_Trial)
-#select ($Daily_Lingshou_Trial_Difficulty) = <span style="color: #876d0c; font-weight: bold;">灵兽秘境--难度,普通|困难|噩梦|地狱|炼狱|深渊,(D_Daily_Lingshou_Trial_Difficulty)
-
-#select ($Daily_Yunbiao_Auto)= <span style="color: #75076c; font-weight: bold;">自动运镖--运镖(建议隐藏玩家防卡死),跳过|开启,(D_Daily_Yunbiao_Auto)
-#select ($Daily_Yunbiao_Free)= <span style="color: #75076c; font-weight: bold;">自动运镖--元宝运镖选择(谨慎选择),元宝|免费,(D_Daily_Yunbiao_Free)
-#select ($Daily_Yunbiao_Type)= <span style="color: #75076c; font-weight: bold;">自动运镖--运镖类型(高危需师徒组队),安全|高危,(D_Daily_Yunbiao_Type)
-#select ($Daily_Yunbiao_Car)= <span style="color: #75076c; font-weight: bold;">自动运镖--镖车类型(九霄需武仙以上),普通民镖|商行商标|珍宝玉镖|皇家贡镖|九霄仙贡镖,(D_Daily_Yunbiao_Car)
-
-#select ($Daily_Lingshou_Interact) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--互动,跳过|互动五次,(D_Daily_Lingshou_Interact)
-#select ($Daily_Lingshou_Explore) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--探宝,跳过|探宝五次,(D_Daily_Lingshou_Explore)
-#select ($Daily_Lingshou_Train) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--修行,跳过|修行五次,(D_Daily_Lingshou_Train)
-
-#select ($Daily_End) = <span style="color: #e30707; font-weight: bold;">结束时动作,跳过|挖矿|豪宅修炼,(D_Daily_End)
-
-#select ($Daily_Reset_Flag) = <span style="color: #e30707; font-weight: bold;">将本次视为新的一天,跳过|重置,跳过
+#select ($Daily_Buy_Skip_Ticket_100) = <span style="color: #14b53a; font-weight: bold;">每日购买--扫荡符,❌跳过|🛒购买,(Load_Daily_Buy_Skip_Ticket_100)
+#select ($Daily_Buy_Relive_Ticket_15) = <span style="color: #14b53a; font-weight: bold;">每日购买--天师符,❌跳过|🛒购买,(Load_Daily_Buy_Relive_Ticket_15)
+#select ($Daily_Buy_Pet_Ticket) = <span style="color: #14b53a; font-weight: bold;">每日购买--驭兽符,❌跳过|🛒购买,(Load_Daily_Buy_Pet_Ticket)
+#select ($Daily_Companion_Work) = <span style="color: #00CC00; font-weight: bold;">随从--发呆检测(矿>鱼>药),❌跳过|⚡自动,(Load_Daily_Companion_Work)
+#select ($Daily_Shitu_Greet) = <span style="color: #13339e; font-weight: bold;">日常--师徒请安,❌跳过|🙏请安,(Load_Daily_Shitu_Greet)
+#select ($Daily_Job_Greet) = <span style="color: #13339e; font-weight: bold;">日常--门派请安,❌跳过|🙏请安,(Load_Daily_Job_Greet)
+#select ($Daily_Job_Reward) = <span style="color: #13339e; font-weight: bold;">日常--门派物资,❌跳过|🎁领取,(Load_Daily_Job_Reward)
+#select ($Daily_Dungeon_Yanziwu) = <span style="color: #990099; font-weight: bold;">副本--燕子坞扫荡五次,❌跳过|🟢普通|🔴困难,(Load_Daily_Dungeon_Yanziwu)
+#select ($Daily_Penglai_Search) = <span style="color: #0f9994; font-weight: bold;">蓬莱岛--搜索,❌跳过|🔍搜索,(Load_Daily_Penglai_Search)
+#select ($Daily_Penglai_Put) = <span style="color: #0f9994; font-weight: bold;">蓬莱岛--观山/临水,❌跳过|⛰️观山|🌊临水,(Load_Daily_Penglai_Put)
+#input ($Daily_Battle_Weapon) = <span style="color: #990f59; font-weight: bold;">战斗--使用武器(灵兽秘境、高危镖),(Load_Daily_Battle_Weapon)
+#select ($Daily_Battle_Auto) = <span style="color: #990f59; font-weight: bold;">战斗--自动出招,❌跳过|⚔️自动,(Load_Daily_Battle_Auto)
+#select ($Daily_Lingshou_Trial) = <span style="color: #876d0c; font-weight: bold;">灵兽秘境--探索,❌跳过|👻兽魂|🧥兽装|🩸血脉|✨神通|🌱成长|🏛️远古,(Load_Daily_Lingshou_Trial)
+#select ($Daily_Lingshou_Trial_Difficulty) = <span style="color: #876d0c; font-weight: bold;">灵兽秘境--难度,⚪普通|🟢困难|🔵噩梦|🟡地狱|🟠炼狱|🔴深渊,(Load_Daily_Lingshou_Trial_Difficulty)
+#select ($Daily_Yunbiao_Auto)= <span style="color: #75076c; font-weight: bold;">自动运镖--运镖(建议隐藏玩家防卡死),❌跳过|🚛开启,(Load_Daily_Yunbiao_Auto)
+#select ($Daily_Yunbiao_Free)= <span style="color: #75076c; font-weight: bold;">自动运镖--元宝运镖选择(谨慎选择),🎁免费|💸元宝,(Load_Daily_Yunbiao_Free)
+#select ($Daily_Yunbiao_Type)= <span style="color: #75076c; font-weight: bold;">自动运镖--运镖类型(高危需师徒组队),🧍安全|🧑‍🤝‍🧑高危,(Load_Daily_Yunbiao_Type)
+#select ($Daily_Yunbiao_Car)= <span style="color: #75076c; font-weight: bold;">自动运镖--镖车类型(九霄需武仙以上),👑皇家贡镖|📦普通民镖|🏪商行商标|💎珍宝玉镖|🌟九霄仙贡镖,(Load_Daily_Yunbiao_Car)
+#select ($Daily_Lingshou_Interact) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--互动五次,❌跳过|🐾互动,(Load_Daily_Lingshou_Interact)
+#select ($Daily_Lingshou_Explore) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--探宝五次,❌跳过|🗺️探宝,(Load_Daily_Lingshou_Explore)
+#select ($Daily_Lingshou_Train) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--修行五次,❌跳过|🧘修行,(Load_Daily_Lingshou_Train)
+#select ($Daily_End) = <span style="color: #e30707; font-weight: bold;">结束时动作,⛏️挖矿|❌跳过|🧘修炼,(Load_Daily_End)
+#select ($Daily_Reset_Flag) = <span style="color: #e30707; font-weight: bold;">将本次视为新的一天,❌跳过|🔄重置,❌跳过
 #config
-//选项保存------------------------------------------------------------------------------
+//去符号------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@js ($Daily_Buy_Skip_Ticket_100) = '(Daily_Buy_Skip_Ticket_100)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Buy_Relive_Ticket_15) = '(Daily_Buy_Relive_Ticket_15)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Buy_Pet_Ticket) = '(Daily_Buy_Pet_Ticket)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Companion_Work) = '(Daily_Companion_Work)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Shitu_Greet) = '(Daily_Shitu_Greet)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Job_Greet) = '(Daily_Job_Greet)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Job_Reward) = '(Daily_Job_Reward)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Dungeon_Yanziwu) = '(Daily_Dungeon_Yanziwu)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Penglai_Search) = '(Daily_Penglai_Search)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Penglai_Put) = '(Daily_Penglai_Put)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Battle_Weapon) = '(Daily_Battle_Weapon)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Battle_Auto) = '(Daily_Battle_Auto)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Lingshou_Trial) = '(Daily_Lingshou_Trial)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Lingshou_Trial_Difficulty) = '(Daily_Lingshou_Trial_Difficulty)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Yunbiao_Auto) = '(Daily_Yunbiao_Auto)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Yunbiao_Free) = '(Daily_Yunbiao_Free)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Yunbiao_Type) = '(Daily_Yunbiao_Type)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Yunbiao_Car) = '(Daily_Yunbiao_Car)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Lingshou_Interact) = '(Daily_Lingshou_Interact)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Lingshou_Explore) = '(Daily_Lingshou_Explore)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Lingshou_Train) = '(Daily_Lingshou_Train)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_End) = '(Daily_End)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Reset_Flag) = '(Daily_End)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+//@print (Daily_Buy_Skip_Ticket_100)
+//@print (Daily_Buy_Relive_Ticket_15)
+//@print (Daily_Buy_Pet_Ticket)
+//@print (Daily_Companion_Work)
+//@print (Daily_Shitu_Greet)
+//@print (Daily_Job_Greet)
+//@print (Daily_Job_Reward)
+//@print (Daily_Dungeon_Yanziwu)
+//@print (Daily_Penglai_Search)
+//@print (Daily_Penglai_Put)
+//@print (Daily_Battle_Weapon)
+//@print (Daily_Battle_Auto)
+//@print (Daily_Lingshou_Trial)
+//@print (Daily_Lingshou_Trial_Difficulty)
+//@print (Daily_Yunbiao_Auto)
+//@print (Daily_Yunbiao_Free)
+//@print (Daily_Yunbiao_Type)
+//@print (Daily_Yunbiao_Car)
+//@print (Daily_Lingshou_Interact)
+//@print (Daily_Lingshou_Explore)
+//@print (Daily_Lingshou_Train)
+//@print (Daily_End)
+//@print (Daily_Reset_Flag)
+//选项保存------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 @js WSStore.set('(Set_Daily_Buy_Skip_Ticket_100)','(Daily_Buy_Skip_Ticket_100)')
 @js WSStore.set('(Set_Daily_Buy_Relive_Ticket_15)','(Daily_Buy_Relive_Ticket_15)')
 @js WSStore.set('(Set_Daily_Buy_Pet_Ticket)','(Daily_Buy_Pet_Ticket)')
-
 @js WSStore.set('(Set_Daily_Companion_Work)','(Daily_Companion_Work)')
-
 @js WSStore.set('(Set_Daily_Shitu_Greet)','(Daily_Shitu_Greet)')
 @js WSStore.set('(Set_Daily_Job_Greet)','(Daily_Job_Greet)')
 @js WSStore.set('(Set_Daily_Job_Reward)','(Daily_Job_Reward)')
-
 @js WSStore.set('(Set_Daily_Dungeon_Yanziwu)','(Daily_Dungeon_Yanziwu)')
-
 @js WSStore.set('(Set_Daily_Penglai_Search)','(Daily_Penglai_Search)')
 @js WSStore.set('(Set_Daily_Penglai_Put)','(Daily_Penglai_Put)')
-
 @js WSStore.set('(Set_Daily_Battle_Weapon)','(Daily_Battle_Weapon)')
 @js WSStore.set('(Set_Daily_Battle_Auto)','(Daily_Battle_Auto)')
-
 @js WSStore.set('(Set_Daily_Lingshou_Trial)','(Daily_Lingshou_Trial)')
 @js WSStore.set('(Set_Daily_Lingshou_Trial_Difficulty)','(Daily_Lingshou_Trial_Difficulty)')
-
 @js WSStore.set('(Set_Daily_Yunbiao_Auto)','(Daily_Yunbiao_Auto)')
 @js WSStore.set('(Set_Daily_Yunbiao_Free)','(Daily_Yunbiao_Free)')
 @js WSStore.set('(Set_Daily_Yunbiao_Type)','(Daily_Yunbiao_Type)')
 @js WSStore.set('(Set_Daily_Yunbiao_Car)','(Daily_Yunbiao_Car)')
-
 @js WSStore.set('(Set_Daily_Lingshou_Interact)','(Daily_Lingshou_Interact)')
 @js WSStore.set('(Set_Daily_Lingshou_Explore)','(Daily_Lingshou_Explore)')
 @js WSStore.set('(Set_Daily_Lingshou_Train)','(Daily_Lingshou_Train)')
-
 @js WSStore.set('(Set_Daily_End)','(Daily_End)')
-//流程开始------------------------------------------------------------------------------
+//流程开始------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 @cmdDelay 0
 state stop
-//状态检查------------------------------------------------------------------------------
-($Set_Info_Last_Time) = (:name)Info_Last_Time
-@js if(!WSStore.get('(Set_Info_Last_Time)')) WSStore.set('(Set_Info_Last_Time)', {Year:0, Month:0, Date:0, Hour:0, Min:0, Sec:0})
-@js ($Info_Last_Time_Year) = WSStore.get('(Set_Info_Last_Time)').Year
-@js ($Info_Last_Time_Month) = WSStore.get('(Set_Info_Last_Time)').Month
-@js ($Info_Last_Time_Date) = WSStore.get('(Set_Info_Last_Time)').Date
-@js ($Info_Last_Time_Hour) = WSStore.get('(Set_Info_Last_Time)').Hour
-@js ($Info_Last_Time_Min) = WSStore.get('(Set_Info_Last_Time)').Min
-@js ($Info_Last_Time_Sec) = WSStore.get('(Set_Info_Last_Time)').Sec
+//状态检查
+($Save_Info_Last_Time) = (:name)Info_Last_Time
+@js if(!WSStore.get('(Save_Info_Last_Time)')) WSStore.set('(Save_Info_Last_Time)', {Year:0, Month:0, Date:0, Hour:0, Min:0, Sec:0})
+@js ($Info_Last_Time_Year) = WSStore.get('(Save_Info_Last_Time)').Year
+@js ($Info_Last_Time_Month) = WSStore.get('(Save_Info_Last_Time)').Month
+@js ($Info_Last_Time_Date) = WSStore.get('(Save_Info_Last_Time)').Date
+@js ($Info_Last_Time_Hour) = WSStore.get('(Save_Info_Last_Time)').Hour
+@js ($Info_Last_Time_Min) = WSStore.get('(Save_Info_Last_Time)').Min
+@js ($Info_Last_Time_Sec) = WSStore.get('(Save_Info_Last_Time)').Sec
 @print ⌚ 上次时间：(Info_Last_Time_Year)年,(Info_Last_Time_Month)月,(Info_Last_Time_Date)日
 @print ⌚ 上次时间：(Info_Last_Time_Hour)时,(Info_Last_Time_Min)分,(Info_Last_Time_Sec)秒
 //
@@ -429,7 +501,7 @@ info
 @task 完成5次灵兽互动 ($Task_Check_Lingshou_Interact)/5
 @task 完成5次灵兽探宝 ($Task_Check_Lingshou_Explore)/5
 @task 完成3次灵兽修行 ($Task_Check_Lingshou_Train)/3
-//随从指派------------------------------------------------------------------------------
+//随从指派------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [if] (Now_Companion_ID1) != null
  rel (Now_Companion_ID1) wk
  rel (Now_Companion_ID1) diaoyu
@@ -446,7 +518,7 @@ info
  rel (Now_Companion_ID3) caiyao
  @print ⚒️ 已指派 (Now_Companion_Name3) 去工作
 @wait 500
-//买扫荡符------------------------------------------------------------------------------
+//买扫荡符------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ($Buy_Skip_Ticket_Check) = null
 [if] (Daily_Buy_Skip_Ticket_100) == 购买 && (Info_Check_Cross5AM) == true
  shop (Daily_Buy_Skip_Ticket_ID) 100
@@ -458,7 +530,7 @@ info
  [if] (Buy_Skip_Ticket_Check) == 从商店里购买
   @print 🛒 已成功购买100张扫荡符。
 @wait 500
-//买天师符------------------------------------------------------------------------------
+//买天师符------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ($Buy_Relive_Ticket_Check) = null
 [if] (Daily_Buy_Relive_Ticket_15) == 购买 && (Info_Check_Cross5AM) == true
  shop (Daily_Buy_Relive_Ticket_ID) 15
@@ -470,14 +542,14 @@ info
  [if] (Buy_Relive_Ticket_Check) == 从商店里购买
   @print 🛒 已成功购买15张天师符。
 @wait 500
-//师傅请安------------------------------------------------------------------------------
+//师傅请安------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [if] (Daily_Shitu_Greet) == 请安 && (Info_Check_Cross5AM) == true
  shitu greet
  @wait 500
  shitu greet
  @tip 你还没有玩家师父。|你今天已经请安过了。
  @wait 1000
-//门派请安------------------------------------------------------------------------------
+//门派请安------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [if] (Daily_Job_Greet) == 请安 && (Info_Check_Job_Greet) != 尚未 && (Info_Check_Cross5AM) == true
  ($Now_Job) = (:family)
  goto ddz
@@ -497,7 +569,7 @@ info
  @tip 每天请一次安就可以了，多了会惹人烦的。
  @print 🏯 门派请安完成。
  @wait 1000
-//门派领取------------------------------------------------------------------------------
+//门派领取------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //武当: 'WUDANG',峨眉: 'EMEI',少林: 'SHAOLIN',逍遥: 'XIAOYAO',华山: 'HUASHAN',丐帮: 'GAIBANG',杀手: 'SHASHOU'
 [if] (Daily_Job_Reward) == 领取 && (Info_Check_Cross5AM) == true
  @js window.fid = (typeof GameState !== "undefined" && GameState.score) ? GameState.score.family_py : ""
@@ -513,7 +585,7 @@ info
  sell all
  store all
  @wait 1000
-//买灵兽符------------------------------------------------------------------------------
+//买灵兽符------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [if] (Daily_Buy_Pet_Ticket) == 购买 && (Info_Check_Cross5AM) == true
  jh fam lingshou start
  go north
@@ -523,9 +595,9 @@ info
  @wait 500
  buy 10 lingshou_yushoufu from {r兽痕石守}?
  @wait 1000
-//蓬莱区域------------------------------------------------------------------------------
+//蓬莱区域------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [if] (Info_Check_Cross5AM) == true
- [if] (Daily_Penglai_Search) != 跳过 || (Daily_Penglai_Put) != 跳过
+ [if] (Daily_Penglai_Search) == 搜索 || (Daily_Penglai_Put) != 跳过
   jh ar 3 start
   @wait 1000
   go east
@@ -537,7 +609,7 @@ info
   go northeast
   go north
   jump
-  [if] (Daily_Penglai_Search) != 跳过
+  [if] (Daily_Penglai_Search) == 搜索
    search
    @wait 500
    search
@@ -552,14 +624,14 @@ info
     put_right
     @print 🪂 蓬莱岛放入宝石(临水)
    @wait 1000
-//战斗准备------------------------------------------------------------------------------
+//战斗准备------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [if] (Daily_Battle_Weapon) != null
  eq {b(Daily_Battle_Weapon)}?
  @wait 1000
-[if] (Daily_Battle_Auto) != 跳过
+[if] (Daily_Battle_Auto) == 自动
  $startpfm
  @wait 1000
-//灵兽秘境------------------------------------------------------------------------------
+//灵兽秘境------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 lingshou jh explore (Daily_Lingshou_ID)
 @wait 1000
 lingshou jh train (Daily_Lingshou_ID)
@@ -729,7 +801,7 @@ lingshou jh train (Daily_Lingshou_ID)
     [if] {r(:name)的镖车}? == null
      [break]
 //灵兽日常------------------------------------------------------------------------------
-[if] (Daily_Lingshou_Interact) == 互动五次 && (Task_Check_Lingshou_Interact) != 5
+[if] (Daily_Lingshou_Interact) == 互动 && (Task_Check_Lingshou_Interact) != 5
  @print 🐾 尝试进行灵兽互动。
  lingshou jh explore (Daily_Lingshou_ID)
  @wait 1000
@@ -745,7 +817,7 @@ lingshou jh train (Daily_Lingshou_ID)
  @wait 1000
  lingshou jh interact (Daily_Lingshou_ID)
  @wait 1000
-[if] (Daily_Lingshou_Explore) == 探宝五次 && (Task_Check_Lingshou_Explore) != 5
+[if] (Daily_Lingshou_Explore) == 探宝 && (Task_Check_Lingshou_Explore) != 5
  @print 🐾 尝试进行灵兽探宝。
  lingshou jh explore (Daily_Lingshou_ID)
  @wait 1000
@@ -753,7 +825,7 @@ lingshou jh train (Daily_Lingshou_ID)
  @wait 1000
  lingshou jh explore (Daily_Lingshou_ID) all
  @wait 1000
-[if] (Daily_Lingshou_Train) == 修行五次 && (Task_Check_Lingshou_Train) != 3
+[if] (Daily_Lingshou_Train) == 修行 && (Task_Check_Lingshou_Train) != 3
  @print 🐾 尝试进行灵兽修行。
  lingshou jh explore (Daily_Lingshou_ID)
  @wait 1000
@@ -769,11 +841,11 @@ lingshou jh train (Daily_Lingshou_ID)
 @task 完成3次灵兽修行 ($Task_Check_Lingshou_Train)/3
 [if] (Task_Check_Lingshou_Interact) == 5 && (Task_Check_Lingshou_Explore) == 5 && (Task_Check_Lingshou_Train) == 3
  @print 🐾 灵兽互动、探宝、修行已完成。
-[if] (Daily_Lingshou_Interact) == 互动五次 && (Task_Check_Lingshou_Interact) != 5
+[if] (Daily_Lingshou_Interact) == 互动 && (Task_Check_Lingshou_Interact) != 5
  @print 🐾 灵兽互动未完成。
-[if] (Daily_Lingshou_Explore) == 探宝五次 && (Task_Check_Lingshou_Explore) != 5
+[if] (Daily_Lingshou_Explore) == 探宝 && (Task_Check_Lingshou_Explore) != 5
  @print 🐾 灵兽探宝未完成。
-[if] (Daily_Lingshou_Train) == 修行五次 && (Task_Check_Lingshou_Train) != 3
+[if] (Daily_Lingshou_Train) == 修行 && (Task_Check_Lingshou_Train) != 3
  @print 🐾 灵兽修行未完成。
 //自动燕子坞------------------------------------------------------------------------------
 ($Now_Dungeon_Yanziwu_Check) = Null
@@ -806,7 +878,7 @@ lingshou jh train (Daily_Lingshou_ID)
   store all
   @wait 1000
 //结束挂机------------------------------------------------------------------------------
-[if] (Daily_Battle_Auto) != 跳过
+[if] (Daily_Battle_Auto) == 自动
  $stoppfm
 [if] (Daily_End) == 跳过
  goto home
@@ -818,13 +890,13 @@ lingshou jh train (Daily_Lingshou_ID)
  xiulian
 //结束存档------------------------------------------------------------------------------
 [if] (Daily_Dungeon_Yanziwu) == 跳过 || (Info_Check_Cross5AM) == false
- @js WSStore.set('(Set_Info_Last_Time)',{Year:'(Now_Year)',Month:'(Now_Month)',Date:'(Now_Date)',Hour:'(Now_Hour)',Min:'(Now_Min)',Sec:'(Now_Sec)'})
+ @js WSStore.set('(Save_Info_Last_Time)',{Year:'(Now_Year)',Month:'(Now_Month)',Date:'(Now_Date)',Hour:'(Now_Hour)',Min:'(Now_Min)',Sec:'(Now_Sec)'})
  tm ✅ 自动日常已结束，已进行保存。
 [if] (Daily_Dungeon_Yanziwu) != 跳过 && (Info_Check_Cross5AM) == true
  [if] (Now_Dungeon_Yanziwu_Finish) == true
-  @js WSStore.set('(Set_Info_Last_Time)',{Year:'(Now_Year)',Month:'(Now_Month)',Date:'(Now_Date)',Hour:'(Now_Hour)',Min:'(Now_Min)',Sec:'(Now_Sec)'})
+  @js WSStore.set('(Save_Info_Last_Time)',{Year:'(Now_Year)',Month:'(Now_Month)',Date:'(Now_Date)',Hour:'(Now_Hour)',Min:'(Now_Min)',Sec:'(Now_Sec)'})
   tm ✅ 自动日常已结束，已进行保存。
  [if] (Now_Dungeon_Yanziwu_Finish) == false
   tm ❌ 自动日常已结束。因燕子坞扫荡未完成，今日完成旗标不进行更新。
-//
+//武道
 task wudao_road fin
