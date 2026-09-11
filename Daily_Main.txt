@@ -4,7 +4,7 @@
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊。(服务器卡顿、断线造成的问题难以解决。)
 //本流程免费，旨在日常减负，请勿用作商业用途。
 //自动更新------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-($Now_Version) = 2026091101
+($Now_Version) = 2026091102
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Task_Flow_Name) = A1日常
@@ -29,6 +29,7 @@
  [exit]
 [if] (Now_Version) != stop && (Net_Version) != null && (Net_Version) != ""
  @print 🌐 网络连接正常，远程版本号为：(Net_Version)
+ @print 🔍 本次更新内容：新增每日副本扫荡设定、修复未正确保存问题
  [if] (Net_Version) == (Now_Version)
   @print 🎉 当前已是最新版本，无需更新。
  [if] (Net_Version) != (Now_Version)
@@ -199,6 +200,8 @@
 ($Save_Daily_Job_Greet) = (:name)Daily_Job_Greet
 ($Save_Daily_Job_Reward) = (:name)Daily_Job_Reward
 ($Save_Daily_Dungeon_Yanziwu) = (:name)Daily_Dungeon_Yanziwu
+($Save_Daily_Dungeon_FB_Name) = (:name)Daily_Dungeon_FB_Name
+($Save_Daily_Dungeon_FB_Count) = (:name)Daily_Dungeon_FB_Count
 ($Save_Daily_Penglai_Search) = (:name)Daily_Penglai_Search
 ($Save_Daily_Penglai_Put) = (:name)Daily_Penglai_Put
 ($Save_Daily_Battle_Weapon) = (:name)Daily_Battle_Weapon
@@ -222,6 +225,8 @@
 @js ($Load_Daily_Job_Greet) = WSStore.get('(Save_Daily_Job_Greet)')
 @js ($Load_Daily_Job_Reward) = WSStore.get('(Save_Daily_Job_Reward)')
 @js ($Load_Daily_Dungeon_Yanziwu) = WSStore.get('(Save_Daily_Dungeon_Yanziwu)')
+@js ($Load_Daily_Dungeon_FB_Name) = WSStore.get('(Save_Daily_Dungeon_FB_Name)')
+@js ($Load_Daily_Dungeon_FB_Count) = WSStore.get('(Save_Daily_Dungeon_FB_Count)')
 @js ($Load_Daily_Penglai_Search) = WSStore.get('(Save_Daily_Penglai_Search)')
 @js ($Load_Daily_Penglai_Put) = WSStore.get('(Save_Daily_Penglai_Put)')
 @js ($Load_Daily_Battle_Weapon) = WSStore.get('(Save_Daily_Battle_Weapon)')
@@ -271,6 +276,11 @@
  ($Load_Daily_Dungeon_Yanziwu) = 🟢普通
 [if] (Load_Daily_Dungeon_Yanziwu) == 困难
  ($Load_Daily_Dungeon_Yanziwu) = 🔴困难
+
+@js ($Load_Daily_Dungeon_FB_Name) = ((v = '(Load_Daily_Dungeon_FB_Name)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()) => (!v || v === '跳过' || v === 'null') ? '❌跳过' : (v.startsWith('困难') ? '🔴' : '🟢') + v)()
+[if] (Load_Daily_Dungeon_FB_Count) == null
+ ($Load_Daily_Dungeon_FB_Count) = 0
+
 [if] (Load_Daily_Penglai_Search) == null || (Load_Daily_Penglai_Search) == 跳过
  ($Load_Daily_Penglai_Search) = ❌跳过
 [if] (Load_Daily_Penglai_Search) == 搜索
@@ -365,6 +375,10 @@
 #select ($Daily_Job_Greet) = <span style="color: #13339e; font-weight: bold;">日常--门派请安,❌跳过|🙏请安,(Load_Daily_Job_Greet)
 #select ($Daily_Job_Reward) = <span style="color: #13339e; font-weight: bold;">日常--门派物资,❌跳过|🎁领取,(Load_Daily_Job_Reward)
 #select ($Daily_Dungeon_Yanziwu) = <span style="color: #990099; font-weight: bold;">副本--燕子坞扫荡五次,❌跳过|🟢普通|🔴困难,(Load_Daily_Dungeon_Yanziwu)
+
+#select ($Daily_Dungeon_FB_Name) = <span style="color: #990099; font-weight: bold;">副本--每日扫荡,❌跳过|🟢树林|🟢普通财主家|🔴困难财主家|🟢流氓巷|🟢丽春院|🟢兵营|🟢庄府|🟢鳌拜府|🟢天地会|🟢神龙教|🟢关外|🟢温府|🟢五毒教|🟢恒山|🟢青城山|🟢衡山|🟢泰山|🟢嵩山|🟢云梦沼泽|🟢普通桃花岛|🔴困难桃花岛|🟢白驼山|🟢星宿海|🟢普通冰火岛|🔴困难冰火岛|🟢普通移花宫|🔴困难移花宫|🟢普通燕子坞|🔴困难燕子坞|🟢普通黑木崖|🔴困难黑木崖|🟢普通缥缈峰|🔴困难缥缈峰|🟢光明顶|🟢普通天龙寺|🔴困难天龙寺|🟢血刀门|🟢普通古墓派|🔴困难古墓派|🟢华山论剑|🟢侠客岛,(Load_Daily_Dungeon_FB_Name)
+#input ($Daily_Dungeon_FB_Count) = <span style="color: #990099; font-weight: bold;">副本--每日扫荡次数,(Load_Daily_Dungeon_FB_Count)
+
 #select ($Daily_Penglai_Search) = <span style="color: #0f9994; font-weight: bold;">蓬莱岛--搜索,❌跳过|🔍搜索,(Load_Daily_Penglai_Search)
 #select ($Daily_Penglai_Put) = <span style="color: #0f9994; font-weight: bold;">蓬莱岛--观山/临水,❌跳过|⛰️观山|🌊临水,(Load_Daily_Penglai_Put)
 #input ($Daily_Battle_Weapon) = <span style="color: #990f59; font-weight: bold;">战斗--使用武器(灵兽秘境、高危镖),(Load_Daily_Battle_Weapon)
@@ -390,6 +404,9 @@
 @js ($Daily_Job_Greet) = '(Daily_Job_Greet)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Job_Reward) = '(Daily_Job_Reward)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Dungeon_Yanziwu) = '(Daily_Dungeon_Yanziwu)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+
+@js ($Daily_Dungeon_FB_Name) = '(Daily_Dungeon_FB_Name)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+
 @js ($Daily_Penglai_Search) = '(Daily_Penglai_Search)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Penglai_Put) = '(Daily_Penglai_Put)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Battle_Weapon) = '(Daily_Battle_Weapon)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
@@ -405,52 +422,37 @@
 @js ($Daily_Lingshou_Train) = '(Daily_Lingshou_Train)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_End) = '(Daily_End)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Reset_Flag) = '(Daily_End)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
-//@print (Daily_Buy_Skip_Ticket_100)
-//@print (Daily_Buy_Relive_Ticket_15)
-//@print (Daily_Buy_Pet_Ticket)
-//@print (Daily_Companion_Work)
-//@print (Daily_Shitu_Greet)
-//@print (Daily_Job_Greet)
-//@print (Daily_Job_Reward)
-//@print (Daily_Dungeon_Yanziwu)
-//@print (Daily_Penglai_Search)
-//@print (Daily_Penglai_Put)
-//@print (Daily_Battle_Weapon)
-//@print (Daily_Battle_Auto)
-//@print (Daily_Lingshou_Trial)
-//@print (Daily_Lingshou_Trial_Difficulty)
-//@print (Daily_Yunbiao_Auto)
-//@print (Daily_Yunbiao_Free)
-//@print (Daily_Yunbiao_Type)
-//@print (Daily_Yunbiao_Car)
-//@print (Daily_Lingshou_Interact)
-//@print (Daily_Lingshou_Explore)
-//@print (Daily_Lingshou_Train)
-//@print (Daily_End)
-//@print (Daily_Reset_Flag)
+//除错------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+[if] (Daily_Dungeon_FB_Count) > 50
+ ($Daily_Dungeon_FB_Count) = 50
+ @print 扫荡次数最多50次，已重新设定为50次。
 //选项保存------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-@js WSStore.set('(Set_Daily_Buy_Skip_Ticket_100)','(Daily_Buy_Skip_Ticket_100)')
-@js WSStore.set('(Set_Daily_Buy_Relive_Ticket_15)','(Daily_Buy_Relive_Ticket_15)')
-@js WSStore.set('(Set_Daily_Buy_Pet_Ticket)','(Daily_Buy_Pet_Ticket)')
-@js WSStore.set('(Set_Daily_Companion_Work)','(Daily_Companion_Work)')
-@js WSStore.set('(Set_Daily_Shitu_Greet)','(Daily_Shitu_Greet)')
-@js WSStore.set('(Set_Daily_Job_Greet)','(Daily_Job_Greet)')
-@js WSStore.set('(Set_Daily_Job_Reward)','(Daily_Job_Reward)')
-@js WSStore.set('(Set_Daily_Dungeon_Yanziwu)','(Daily_Dungeon_Yanziwu)')
-@js WSStore.set('(Set_Daily_Penglai_Search)','(Daily_Penglai_Search)')
-@js WSStore.set('(Set_Daily_Penglai_Put)','(Daily_Penglai_Put)')
-@js WSStore.set('(Set_Daily_Battle_Weapon)','(Daily_Battle_Weapon)')
-@js WSStore.set('(Set_Daily_Battle_Auto)','(Daily_Battle_Auto)')
-@js WSStore.set('(Set_Daily_Lingshou_Trial)','(Daily_Lingshou_Trial)')
-@js WSStore.set('(Set_Daily_Lingshou_Trial_Difficulty)','(Daily_Lingshou_Trial_Difficulty)')
-@js WSStore.set('(Set_Daily_Yunbiao_Auto)','(Daily_Yunbiao_Auto)')
-@js WSStore.set('(Set_Daily_Yunbiao_Free)','(Daily_Yunbiao_Free)')
-@js WSStore.set('(Set_Daily_Yunbiao_Type)','(Daily_Yunbiao_Type)')
-@js WSStore.set('(Set_Daily_Yunbiao_Car)','(Daily_Yunbiao_Car)')
-@js WSStore.set('(Set_Daily_Lingshou_Interact)','(Daily_Lingshou_Interact)')
-@js WSStore.set('(Set_Daily_Lingshou_Explore)','(Daily_Lingshou_Explore)')
-@js WSStore.set('(Set_Daily_Lingshou_Train)','(Daily_Lingshou_Train)')
-@js WSStore.set('(Set_Daily_End)','(Daily_End)')
+@js WSStore.set('(Save_Daily_Buy_Skip_Ticket_100)','(Daily_Buy_Skip_Ticket_100)')
+@js WSStore.set('(Save_Daily_Buy_Relive_Ticket_15)','(Daily_Buy_Relive_Ticket_15)')
+@js WSStore.set('(Save_Daily_Buy_Pet_Ticket)','(Daily_Buy_Pet_Ticket)')
+@js WSStore.set('(Save_Daily_Companion_Work)','(Daily_Companion_Work)')
+@js WSStore.set('(Save_Daily_Shitu_Greet)','(Daily_Shitu_Greet)')
+@js WSStore.set('(Save_Daily_Job_Greet)','(Daily_Job_Greet)')
+@js WSStore.set('(Save_Daily_Job_Reward)','(Daily_Job_Reward)')
+@js WSStore.set('(Save_Daily_Dungeon_Yanziwu)','(Daily_Dungeon_Yanziwu)')
+
+@js WSStore.set('(Save_Daily_Dungeon_FB_Name)','(Daily_Dungeon_FB_Name)')
+@js WSStore.set('(Save_Daily_Dungeon_FB_Count)','(Daily_Dungeon_FB_Count)')
+
+@js WSStore.set('(Save_Daily_Penglai_Search)','(Daily_Penglai_Search)')
+@js WSStore.set('(Save_Daily_Penglai_Put)','(Daily_Penglai_Put)')
+@js WSStore.set('(Save_Daily_Battle_Weapon)','(Daily_Battle_Weapon)')
+@js WSStore.set('(Save_Daily_Battle_Auto)','(Daily_Battle_Auto)')
+@js WSStore.set('(Save_Daily_Lingshou_Trial)','(Daily_Lingshou_Trial)')
+@js WSStore.set('(Save_Daily_Lingshou_Trial_Difficulty)','(Daily_Lingshou_Trial_Difficulty)')
+@js WSStore.set('(Save_Daily_Yunbiao_Auto)','(Daily_Yunbiao_Auto)')
+@js WSStore.set('(Save_Daily_Yunbiao_Free)','(Daily_Yunbiao_Free)')
+@js WSStore.set('(Save_Daily_Yunbiao_Type)','(Daily_Yunbiao_Type)')
+@js WSStore.set('(Save_Daily_Yunbiao_Car)','(Daily_Yunbiao_Car)')
+@js WSStore.set('(Save_Daily_Lingshou_Interact)','(Daily_Lingshou_Interact)')
+@js WSStore.set('(Save_Daily_Lingshou_Explore)','(Daily_Lingshou_Explore)')
+@js WSStore.set('(Save_Daily_Lingshou_Train)','(Daily_Lingshou_Train)')
+@js WSStore.set('(Save_Daily_End)','(Daily_End)')
 //流程开始------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 @cmdDelay 0
 state stop
@@ -848,35 +850,400 @@ lingshou jh train (Daily_Lingshou_ID)
 [if] (Daily_Lingshou_Train) == 修行 && (Task_Check_Lingshou_Train) != 3
  @print 🐾 灵兽修行未完成。
 //自动燕子坞------------------------------------------------------------------------------
-($Now_Dungeon_Yanziwu_Check) = Null
-($Now_Dungeon_Yanziwu_Finish) = false
-//
-[if] (Daily_Dungeon_Yanziwu) == 普通五次 && (Info_Check_Cross5AM) == true
+($Now_Dungeon_Check) = Null
+[if] (Daily_Dungeon_Yanziwu) == 普通 && (Info_Check_Cross5AM) == true
  @wait 500
  cr yanziwu 0 5
- @tip 本次($Now_Dungeon_Yanziwu_Check)，共获得|没时间这么做|你的精力不够，无法扫荡副本。|副本燕子坞还没解锁!|你需要燕子坞(普通)单人模式完成100%才可以扫荡副本!
- [if] (Now_Dungeon_Yanziwu_Check) != 扫荡五次
-  ($Now_Dungeon_Yanziwu_Finish) = false
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本燕子坞还没解锁!|你需要燕子坞(普通)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
   tm ❌ 燕子坞扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
- [if] (Now_Dungeon_Yanziwu_Check) == 扫荡五次
-  ($Now_Dungeon_Yanziwu_Finish) = true
+ [if] (Now_Dungeon_Check) == 获
   @print ✅ 燕子坞扫荡成功。
   sell all
   store all
   @wait 1000
-[if] (Daily_Dungeon_Yanziwu) == 困难五次 && (Info_Check_Cross5AM) == true
+[if] (Daily_Dungeon_Yanziwu) == 困难 && (Info_Check_Cross5AM) == true
  @wait 500
  cr yanziwu 1 5
- @tip 本次($Now_Dungeon_Yanziwu_Check)，共获得|没时间这么做|你的精力不够，无法扫荡副本。|副本燕子坞还没解锁!|你需要燕子坞(困难)单人模式完成100%才可以扫荡副本!
- [if] (Now_Dungeon_Yanziwu_Check) != 扫荡五次
-  ($Now_Dungeon_Yanziwu_Finish) = false
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本燕子坞还没解锁!|你需要燕子坞(困难)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
   tm ❌ 燕子坞扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
- [if] (Now_Dungeon_Yanziwu_Check) == 扫荡五次
-  ($Now_Dungeon_Yanziwu_Finish) = true
+ [if] (Now_Dungeon_Check) == 获
   @print ✅ 燕子坞扫荡成功。
   sell all
   store all
   @wait 1000
+//自动副本------------------------------------------------------------------------------
+($Now_Dungeon_Check) = Null
+
+[if] (Daily_Dungeon_FB_Name) == 树林 && (Info_Check_Cross5AM) == true
+ cr lw 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 树林扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 树林扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 普通财主家 && (Info_Check_Cross5AM) == true
+ cr cuifu 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本财主家还没解锁!|你需要财主家(普通)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 财主家扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 财主家扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 困难财主家 && (Info_Check_Cross5AM) == true
+ cr cuifu 1 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本财主家还没解锁!|你需要财主家(困难)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 财主家扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 财主家扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 流氓巷 && (Info_Check_Cross5AM) == true
+ cr lmw 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 流氓巷扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 流氓巷扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 丽春院 && (Info_Check_Cross5AM) == true
+ cr lcy 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 丽春院扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 丽春院扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 兵营 && (Info_Check_Cross5AM) == true
+ cr by 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 兵营扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 兵营扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 庄府 && (Info_Check_Cross5AM) == true
+ cr zhuang 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 庄府扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 庄府扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 鳌拜府 && (Info_Check_Cross5AM) == true
+ cr ao 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 鳌拜府扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 鳌拜府扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 天地会 && (Info_Check_Cross5AM) == true
+ cr tdh 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 天地会扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 天地会扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 神龙教 && (Info_Check_Cross5AM) == true
+ cr shenlong 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 神龙教扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 神龙教扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 关外 && (Info_Check_Cross5AM) == true
+ cr guanwai 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 关外扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 关外扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 温府 && (Info_Check_Cross5AM) == true
+ cr wenfu 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 温府扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 温府扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 五毒教 && (Info_Check_Cross5AM) == true
+ cr cd 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 五毒教扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 五毒教扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 恒山 && (Info_Check_Cross5AM) == true
+ cr wuyue 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 恒山扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 恒山扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 青城山 && (Info_Check_Cross5AM) == true
+ cr qingcheng 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 青城山扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 青城山扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 衡山 && (Info_Check_Cross5AM) == true
+ cr henshan 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 衡山扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 衡山扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 泰山 && (Info_Check_Cross5AM) == true
+ cr taishan 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 泰山扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 泰山扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 嵩山 && (Info_Check_Cross5AM) == true
+ cr songshan 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 嵩山扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 嵩山扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 云梦沼泽 && (Info_Check_Cross5AM) == true
+ cr yunmeng 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 云梦沼泽扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 云梦沼泽扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 普通桃花岛 && (Info_Check_Cross5AM) == true
+ cr taohua 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本桃花岛还没解锁!|你需要桃花岛(普通)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 桃花岛扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 桃花岛扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 困难桃花岛 && (Info_Check_Cross5AM) == true
+ cr taohua 1 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本桃花岛还没解锁!|你需要桃花岛(困难)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 桃花岛扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 桃花岛扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 白驼山 && (Info_Check_Cross5AM) == true
+ cr baituo 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 白驼山扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 白驼山扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 星宿海 && (Info_Check_Cross5AM) == true
+ cr xingxiu 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 星宿海扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 星宿海扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 普通冰火岛 && (Info_Check_Cross5AM) == true
+ cr binghuo 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本冰火岛还没解锁!|你需要冰火岛(普通)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 冰火岛扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 冰火岛扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 困难冰火岛 && (Info_Check_Cross5AM) == true
+ cr binghuo 1 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本冰火岛还没解锁!|你需要冰火岛(困难)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 冰火岛扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 冰火岛扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 普通移花宫 && (Info_Check_Cross5AM) == true
+ cr yihua 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本移花宫还没解锁!|你需要移花宫(普通)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 移花宫扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 移花宫扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 困难移花宫 && (Info_Check_Cross5AM) == true
+ cr yihua 1 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本移花宫还没解锁!|你需要移花宫(困难)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 移花宫扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 移花宫扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 普通燕子坞 && (Info_Check_Cross5AM) == true
+ cr Yanziwu 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本燕子坞还没解锁!|你需要燕子坞(普通)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 燕子坞扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 燕子坞扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 困难燕子坞 && (Info_Check_Cross5AM) == true
+ cr Yanziwu 1 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本燕子坞还没解锁!|你需要燕子坞(困难)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 燕子坞扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 燕子坞扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 普通黑木崖 && (Info_Check_Cross5AM) == true
+ cr heimuya 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本黑木崖还没解锁!|你需要黑木崖(普通)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 黑木崖扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 黑木崖扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 困难黑木崖 && (Info_Check_Cross5AM) == true
+ cr heimuya 1 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本黑木崖还没解锁!|你需要黑木崖(困难)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 黑木崖扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 黑木崖扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 普通缥缈峰 && (Info_Check_Cross5AM) == true
+ cr piaomiaofeng 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本缥缈峰还没解锁!|你需要缥缈峰(普通)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 缥缈峰扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 缥缈峰扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 困难缥缈峰 && (Info_Check_Cross5AM) == true
+ cr piaomiaofeng 1 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本缥缈峰还没解锁!|你需要缥缈峰(困难)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 缥缈峰扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 缥缈峰扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 光明顶 && (Info_Check_Cross5AM) == true
+ cr guangmingding 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 光明顶扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 光明顶扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 普通天龙寺 && (Info_Check_Cross5AM) == true
+ cr tianlongsi 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本天龙寺还没解锁!|你需要天龙寺(普通)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 天龙寺扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 天龙寺扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 困难天龙寺 && (Info_Check_Cross5AM) == true
+ cr tianlongsi 1 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本天龙寺还没解锁!|你需要天龙寺(困难)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 天龙寺扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 天龙寺扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 血刀门 && (Info_Check_Cross5AM) == true
+ cr xuedao 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 血刀门扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 血刀门扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 普通古墓派 && (Info_Check_Cross5AM) == true
+ cr gumu 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本古墓派还没解锁!|你需要古墓派(普通)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 古墓派扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 古墓派扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 困难古墓派 && (Info_Check_Cross5AM) == true
+ cr gumu 1 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本古墓派还没解锁!|你需要古墓派(困难)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 古墓派扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 古墓派扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 华山论剑 && (Info_Check_Cross5AM) == true
+ cr huashanlunjian 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 华山论剑扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 华山论剑扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 侠客岛 && (Info_Check_Cross5AM) == true
+ cr xiakedao 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 侠客岛扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 侠客岛扫荡成功。
 //结束挂机------------------------------------------------------------------------------
 [if] (Daily_Battle_Auto) == 自动
  $stoppfm
@@ -892,11 +1259,5 @@ lingshou jh train (Daily_Lingshou_ID)
 [if] (Daily_Dungeon_Yanziwu) == 跳过 || (Info_Check_Cross5AM) == false
  @js WSStore.set('(Save_Info_Last_Time)',{Year:'(Now_Year)',Month:'(Now_Month)',Date:'(Now_Date)',Hour:'(Now_Hour)',Min:'(Now_Min)',Sec:'(Now_Sec)'})
  tm ✅ 自动日常已结束，已进行保存。
-[if] (Daily_Dungeon_Yanziwu) != 跳过 && (Info_Check_Cross5AM) == true
- [if] (Now_Dungeon_Yanziwu_Finish) == true
-  @js WSStore.set('(Save_Info_Last_Time)',{Year:'(Now_Year)',Month:'(Now_Month)',Date:'(Now_Date)',Hour:'(Now_Hour)',Min:'(Now_Min)',Sec:'(Now_Sec)'})
-  tm ✅ 自动日常已结束，已进行保存。
- [if] (Now_Dungeon_Yanziwu_Finish) == false
-  tm ❌ 自动日常已结束。因燕子坞扫荡未完成，今日完成旗标不进行更新。
 //武道
 task wudao_road fin
