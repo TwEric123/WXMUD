@@ -4,7 +4,7 @@
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊。(服务器卡顿、断线造成的问题难以解决。)
 //本流程免费，旨在日常减负，请勿用作商业用途。
 //自动更新------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-($Now_Version) = 2026091102
+($Now_Version) = 2026091201
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Task_Flow_Name) = A1日常
@@ -29,7 +29,7 @@
  [exit]
 [if] (Now_Version) != stop && (Net_Version) != null && (Net_Version) != ""
  @print 🌐 网络连接正常，远程版本号为：(Net_Version)
- @print 🔍 本次更新内容：新增每日副本扫荡设定、修复未正确保存问题
+ @print 🔍 本次更新内容：修复未正确保存问题
  [if] (Net_Version) == (Now_Version)
   @print 🎉 当前已是最新版本，无需更新。
  [if] (Net_Version) != (Now_Version)
@@ -1256,8 +1256,7 @@ lingshou jh train (Daily_Lingshou_ID)
  go west
  xiulian
 //结束存档------------------------------------------------------------------------------
-[if] (Daily_Dungeon_Yanziwu) == 跳过 || (Info_Check_Cross5AM) == false
- @js WSStore.set('(Save_Info_Last_Time)',{Year:'(Now_Year)',Month:'(Now_Month)',Date:'(Now_Date)',Hour:'(Now_Hour)',Min:'(Now_Min)',Sec:'(Now_Sec)'})
- tm ✅ 自动日常已结束，已进行保存。
+@js WSStore.set('(Save_Info_Last_Time)',{Year:'(Now_Year)',Month:'(Now_Month)',Date:'(Now_Date)',Hour:'(Now_Hour)',Min:'(Now_Min)',Sec:'(Now_Sec)'})
+tm ✅ 自动日常已结束，已进行保存。
 //武道
 task wudao_road fin
