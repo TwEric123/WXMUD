@@ -4,7 +4,7 @@
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊。(服务器卡顿、断线造成的问题难以解决。)
 //本流程免费，旨在日常减负，请勿用作商业用途。
 //自动更新------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-($Now_Version) = 2026091201
+($Now_Version) = 2026091301
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Task_Flow_Name) = A1日常
@@ -29,7 +29,7 @@
  [exit]
 [if] (Now_Version) != stop && (Net_Version) != null && (Net_Version) != ""
  @print 🌐 网络连接正常，远程版本号为：(Net_Version)
- @print 🔍 本次更新内容：修复未正确保存问题
+ @print 🔍 本次更新内容：修复结束后未修炼问题、增加更多副本扫荡种类。
  [if] (Net_Version) == (Now_Version)
   @print 🎉 当前已是最新版本，无需更新。
  [if] (Net_Version) != (Now_Version)
@@ -361,7 +361,7 @@
  ($Load_Daily_End) = ⛏️挖矿
 [if] (Load_Daily_End) == 跳过
  ($Load_Daily_End) = ❌跳过
-[if] (Load_Daily_End) == 豪宅修炼
+[if] (Load_Daily_End) == 修炼
  ($Load_Daily_End) = 🧘修炼
 //选项设定------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #input ($Daily_Buy_Skip_Ticket_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--扫荡符ID,(Dom_Skip_Ticket_ID)
@@ -376,7 +376,7 @@
 #select ($Daily_Job_Reward) = <span style="color: #13339e; font-weight: bold;">日常--门派物资,❌跳过|🎁领取,(Load_Daily_Job_Reward)
 #select ($Daily_Dungeon_Yanziwu) = <span style="color: #990099; font-weight: bold;">副本--燕子坞扫荡五次,❌跳过|🟢普通|🔴困难,(Load_Daily_Dungeon_Yanziwu)
 
-#select ($Daily_Dungeon_FB_Name) = <span style="color: #990099; font-weight: bold;">副本--每日扫荡,❌跳过|🟢树林|🟢普通财主家|🔴困难财主家|🟢流氓巷|🟢丽春院|🟢兵营|🟢庄府|🟢鳌拜府|🟢天地会|🟢神龙教|🟢关外|🟢温府|🟢五毒教|🟢恒山|🟢青城山|🟢衡山|🟢泰山|🟢嵩山|🟢云梦沼泽|🟢普通桃花岛|🔴困难桃花岛|🟢白驼山|🟢星宿海|🟢普通冰火岛|🔴困难冰火岛|🟢普通移花宫|🔴困难移花宫|🟢普通燕子坞|🔴困难燕子坞|🟢普通黑木崖|🔴困难黑木崖|🟢普通缥缈峰|🔴困难缥缈峰|🟢光明顶|🟢普通天龙寺|🔴困难天龙寺|🟢血刀门|🟢普通古墓派|🔴困难古墓派|🟢华山论剑|🟢侠客岛,(Load_Daily_Dungeon_FB_Name)
+#select ($Daily_Dungeon_FB_Name) = <span style="color: #990099; font-weight: bold;">副本--每日扫荡,❌跳过|🟢树林|🟢普通财主家|🔴困难财主家|🟢流氓巷|🟢丽春院|🟢兵营|🟢庄府|🟢鳌拜府|🟢天地会|🟢神龙教|🟢关外|🟢温府|🟢五毒教|🟢恒山|🟢青城山|🟢衡山|🟢泰山|🟢嵩山|🟢云梦沼泽|🟢普通桃花岛|🔴困难桃花岛|🟢白驼山|🟢星宿海|🟢普通冰火岛|🔴困难冰火岛|🟢普通移花宫|🔴困难移花宫|🟢普通燕子坞|🔴困难燕子坞|🟢普通黑木崖|🔴困难黑木崖|🟢普通缥缈峰|🔴困难缥缈峰|🟢光明顶|🟢普通天龙寺|🔴困难天龙寺|🟢血刀门|🟢普通古墓派|🔴困难古墓派|🟢华山论剑|🟢侠客岛|🟢普通净念禅宗|🔴困难净念禅宗|🟢普通遗忘墓地|🔴困难遗忘墓地|🟢普通地下监狱|🔴困难地下监狱,(Load_Daily_Dungeon_FB_Name)
 #input ($Daily_Dungeon_FB_Count) = <span style="color: #990099; font-weight: bold;">副本--每日扫荡次数,(Load_Daily_Dungeon_FB_Count)
 
 #select ($Daily_Penglai_Search) = <span style="color: #0f9994; font-weight: bold;">蓬莱岛--搜索,❌跳过|🔍搜索,(Load_Daily_Penglai_Search)
@@ -423,9 +423,12 @@
 @js ($Daily_End) = '(Daily_End)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Reset_Flag) = '(Daily_End)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 //除错------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-[if] (Daily_Dungeon_FB_Count) > 50
+[if] (Daily_Dungeon_FB_Name) != 跳过 && (Daily_Dungeon_FB_Count) > 50
  ($Daily_Dungeon_FB_Count) = 50
  @print 扫荡次数最多50次，已重新设定为50次。
+[if] (Daily_Dungeon_FB_Name) != 跳过 && (Daily_Dungeon_FB_Count) < 1
+ ($Daily_Dungeon_FB_Count) = 1
+ @print 扫荡次数最少1次，已重新设定为1次。
 //选项保存------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 @js WSStore.set('(Save_Daily_Buy_Skip_Ticket_100)','(Daily_Buy_Skip_Ticket_100)')
 @js WSStore.set('(Save_Daily_Buy_Relive_Ticket_15)','(Daily_Buy_Relive_Ticket_15)')
@@ -1244,16 +1247,77 @@ lingshou jh train (Daily_Lingshou_ID)
   tm ❌ 侠客岛扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
   @print ✅ 侠客岛扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 普通净念禅宗 && (Info_Check_Cross5AM) == true
+ cr jingnianchanzong 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本净念禅宗还没解锁!|你需要净念禅宗(普通)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 净念禅宗扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 净念禅宗扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 困难净念禅宗 && (Info_Check_Cross5AM) == true
+ cr jingnianchanzong 1 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本净念禅宗还没解锁!|你需要净念禅宗(困难)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 净念禅宗扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 净念禅宗扫荡成功。
+
+//禁地
+
+[if] (Daily_Dungeon_FB_Name) == 普通遗忘墓地 && (Info_Check_Cross5AM) == true
+ cr mudi 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本遗忘墓地还没解锁!|你需要遗忘墓地(普通)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 普通遗忘墓地扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 普通遗忘墓地扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 困难遗忘墓地 && (Info_Check_Cross5AM) == true
+ cr mudi 1 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本遗忘墓地还没解锁!|你需要遗忘墓地(困难)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 困难遗忘墓地扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 困难遗忘墓地扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 普通地下监狱 && (Info_Check_Cross5AM) == true
+ cr dixiajianyu 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本地下监狱还没解锁!|你需要地下监狱(普通)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 地下监狱扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 地下监狱扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 困难地下监狱 && (Info_Check_Cross5AM) == true
+ cr dixiajianyu 1 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本地下监狱还没解锁!|你需要地下监狱(困难)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 困难地下监狱扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 困难地下监狱扫荡成功。
 //结束挂机------------------------------------------------------------------------------
 [if] (Daily_Battle_Auto) == 自动
  $stoppfm
 [if] (Daily_End) == 跳过
+ @wait 500
  goto home
 [if] (Daily_End) == 挖矿
+ @wait 500
  goto kuang
-[if] (Daily_End) == 豪宅修炼
+[if] (Daily_End) == 修炼
+ @wait 500
  goto home
+ @wait 500
  go west
+ @wait 500
  xiulian
 //结束存档------------------------------------------------------------------------------
 @js WSStore.set('(Save_Info_Last_Time)',{Year:'(Now_Year)',Month:'(Now_Month)',Date:'(Now_Date)',Hour:'(Now_Hour)',Min:'(Now_Min)',Sec:'(Now_Sec)'})
