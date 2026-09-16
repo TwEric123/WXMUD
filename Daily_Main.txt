@@ -1,10 +1,10 @@
-//流程更新日期：2026/09/13  仅支持内置插件WSMUD2 26.3.5
+//流程更新日期：2026/09/16  仅支持内置插件WSMUD2 26.3.5
 //1.服务器卡顿、延迟可能造成流程判断异常，请自行注意。2.角色改名后需重新设置。3.灵兽秘境中自动出招会失效，请注意别被打死。
 //4.黄金不够会造成购买扫荡符、运镖等流程卡住，请自行备好充足黄金。5.背包空间不足可能会产生问题，请自行注意背包空间。
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊。(服务器卡顿、断线造成的问题难以解决。)
 //本流程免费，旨在日常减负，请勿用作商业用途。
 //自动更新------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-($Now_Version) = 2026091301
+($Now_Version) = 2026091601
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Task_Flow_Name) = A1日常
@@ -29,7 +29,7 @@
  [exit]
 [if] (Now_Version) != stop && (Net_Version) != null && (Net_Version) != ""
  @print 🌐 网络连接正常，远程版本号为：(Net_Version)
- @print 🔍 本次更新内容：修复结束后未修炼问题、增加更多副本扫荡种类。
+ @print 🔍 本次更新内容：修复灵兽忙碌时，进行灵兽秘境卡住问题。
  [if] (Net_Version) == (Now_Version)
   @print 🎉 当前已是最新版本，无需更新。
  [if] (Net_Version) != (Now_Version)
@@ -673,7 +673,7 @@ lingshou jh train (Daily_Lingshou_ID)
  //
  [while] true
   lingshou trial (Lingshou_Trial) (Lingshou_Trial_Difficulty) confirm
-  @tip 试炼影兽轰然散去|今日($Now_Lingshou_Check)用完|你的($Now_Lingshou_Check)，挑战|暂时($Now_Lingshou_Check)。|已经($Now_Lingshou_Check)，等待你点击“灵兽探宝”确认恢复。|已经($Now_Lingshou_Check)，奖励等待你点击“灵兽探宝”完成结算。
+  @tip 试炼影兽轰然散去|今日($Now_Lingshou_Check)用完|你的($Now_Lingshou_Check)，挑战|暂时($Now_Lingshou_Check)。|已经($Now_Lingshou_Check)，等待你点击“灵兽探宝”确认恢复。|已经($Now_Lingshou_Check)，奖励等待你点击“灵兽探宝”完成结算。|暂时($Now_Lingshou_Check)秘境。
   @liaoshang
   @wait 1000
   [if] (Now_Lingshou_Check) == 灵兽秘境次数已经
@@ -690,6 +690,9 @@ lingshou jh train (Daily_Lingshou_ID)
    [break]
   [if] (Now_Lingshou_Check) == 探宝归来
    tm ❌ 灵兽探宝未确认，已跳过灵兽秘境。
+   [break]
+  [if] (Now_Lingshou_Check) == 无法进入
+   tm ❌ 灵兽正在探宝或修行，已跳过灵兽秘境。
    [break]
   cr over
 //自动运镖------------------------------------------------------------------------------
