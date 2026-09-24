@@ -1,10 +1,12 @@
-//流程更新日期：2026/09/21  仅支持内置插件WSMUD2 26.3.5
+//流程更新日期：2026/09/24  仅支持内置插件WSMUD2 26.3.5
 //1.服务器卡顿、延迟可能造成流程判断异常，请自行注意。2.角色改名后需重新设置。3.灵兽秘境中自动出招会失效，请注意别被打死。
 //4.黄金不够会造成购买扫荡符、运镖等流程卡住，请自行备好充足黄金。5.背包空间不足可能会产生问题，请自行注意背包空间。
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊。(服务器卡顿、断线造成的问题难以解决。)
 //本流程免费，旨在日常减负，请勿用作商业用途。
+//修复记录->@js window.subTabs && window.subTabs[5] && window.subTabs[5].click()
+//修复记录->@tip 购买本趟运镖次数($Now_Yunbiao_Start_Check)。
 //自动更新------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-($Now_Version) = 2026092101
+($Now_Version) = 2026092401
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Task_Flow_Name) = A1日常
@@ -29,7 +31,7 @@
  [exit]
 [if] (Now_Version) != stop && (Net_Version) != null && (Net_Version) != ""
  @print 🌐 网络连接正常，远程版本号为：(Net_Version)
- @print 🔍 本次更新内容：修复灵兽秘境未正确选择、无门无派相关逻辑。
+ @print 🔍 祝各位中秋快乐！修复因游戏更新造成灵兽ID无法辨别问题、修复当日已手动运镖后，才执行本流程自动运镖产生的判定问题。
  [if] (Net_Version) == (Now_Version)
   @print 🎉 当前已是最新版本，无需更新。
  [if] (Net_Version) != (Now_Version)
@@ -96,7 +98,7 @@
 @await (Dom_Load_Time)
 
 @js window.subTabs = document.querySelectorAll('.dialog-footer span, .dialog-tab span')
-@js window.subTabs && window.subTabs[4] && window.subTabs[4].click()
+@js window.subTabs && window.subTabs[5] && window.subTabs[5].click()
 @await (Dom_Load_Time)
 
 @js window.leftItems = document.querySelectorAll('.fb-left .fb-item')
@@ -752,7 +754,7 @@ lingshou jh train (Daily_Lingshou_ID)
   task yunbiao (Now_Yunbiao_Type_Check) (Now_Yunbiao_Car_Check) {r林震南}?
   @wait 500
   //免费/XX元宝/再一起来找我/仅限武仙
-  @tip 本趟使用($Now_Yunbiao_Start_Check)次数。|本趟将额外消耗($Now_Yunbiao_Start_Check)购买次数。|叫上你师傅/徒弟($Now_Yunbiao_Start_Check)。|九霄仙贡镖($Now_Yunbiao_Start_Check)及以上境界接取。|你有一趟暂停的镖还没送完。|你的($Now_Yunbiao_Start_Check)，无法支付押金。
+  @tip 本趟使用($Now_Yunbiao_Start_Check)次数。|本趟将额外消耗($Now_Yunbiao_Start_Check)购买次数。|叫上你师傅/徒弟($Now_Yunbiao_Start_Check)。|九霄仙贡镖($Now_Yunbiao_Start_Check)及以上境界接取。|你有一趟暂停的镖还没送完。|你的($Now_Yunbiao_Start_Check)，无法支付押金。|购买本趟运镖次数($Now_Yunbiao_Start_Check)。
   @wait 500
   //中断判断
   [if] (Now_Yunbiao_Start_Check) == 再一起来找我
@@ -767,6 +769,11 @@ lingshou jh train (Daily_Lingshou_ID)
    [break]
   [if] (Now_Yunbiao_Start_Check) == 黄金不足
    tm ❌ 黄金不足，运镖流程取消。
+   $stoppfm
+   setting off_plist 0
+   [break]
+  [if] (Now_Yunbiao_Start_Check) == 需要10元宝
+   tm ❌ 元宝不足，运镖流程取消。
    $stoppfm
    setting off_plist 0
    [break]
