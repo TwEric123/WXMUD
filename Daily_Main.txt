@@ -5,8 +5,9 @@
 //本流程免费，旨在日常减负，请勿用作商业用途。
 //修复记录->@js window.subTabs && window.subTabs[5] && window.subTabs[5].click()
 //修复记录->@tip 购买本趟运镖次数($Now_Yunbiao_Start_Check)。
+//修复记录->ask2 {r金牌杀手}?
 //自动更新------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-($Now_Version) = 2026092401
+($Now_Version) = 2026092402
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Task_Flow_Name) = A1日常
@@ -569,7 +570,11 @@ info
   ask2 {r大师兄}?
   @wait 500
   ask2 {r大师兄}?
- [if] (Now_Job) != 峨眉派 && (Now_Job) != 少林派 && (Now_Job) != 无门无派
+ [if] (Now_Job) == 杀手楼
+  ask2 {r金牌杀手}?
+  @wait 500
+  ask2 {r金牌杀手}?
+ [if] (Now_Job) != 峨眉派 && (Now_Job) != 少林派 && (Now_Job) != 杀手楼 && (Now_Job) != 无门无派
   ask2 {r首席弟子}?
   @wait 500
   ask2 {r首席弟子}?
