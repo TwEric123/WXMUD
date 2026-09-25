@@ -1,13 +1,11 @@
-//流程更新日期：2026/09/24  仅支持内置插件WSMUD2 26.3.5
+//流程更新日期：2026/09/25  仅支持内置插件WSMUD2 26.3.5
 //1.服务器卡顿、延迟可能造成流程判断异常，请自行注意。2.角色改名后需重新设置。3.灵兽秘境中自动出招会失效，请注意别被打死。
 //4.黄金不够会造成购买扫荡符、运镖等流程卡住，请自行备好充足黄金。5.背包空间不足可能会产生问题，请自行注意背包空间。
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊。(服务器卡顿、断线造成的问题难以解决。)
 //本流程免费，旨在日常减负，请勿用作商业用途。
-//修复记录->@js window.subTabs && window.subTabs[5] && window.subTabs[5].click()
-//修复记录->@tip 购买本趟运镖次数($Now_Yunbiao_Start_Check)。
-//修复记录->ask2 {r金牌杀手}?
+//修复记录->增加节庆日常选项、当ID侦测失败改为队伍频道提醒。
 //自动更新------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-($Now_Version) = 2026092402
+($Now_Version) = 2026092501
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Task_Flow_Name) = A1日常
@@ -32,7 +30,7 @@
  [exit]
 [if] (Now_Version) != stop && (Net_Version) != null && (Net_Version) != ""
  @print 🌐 网络连接正常，远程版本号为：(Net_Version)
- @print 🔍 祝各位中秋快乐！修复因游戏更新造成灵兽ID无法辨别问题、修复当日已手动运镖后，才执行本流程自动运镖产生的判定问题。
+ @print 🎑 祝各位中秋快乐！增加节庆日常选项、当ID侦测失败改为队伍频道提醒。
  [if] (Net_Version) == (Now_Version)
   @print 🎉 当前已是最新版本，无需更新。
  [if] (Net_Version) != (Now_Version)
@@ -161,39 +159,39 @@
 [if] (Dom_Skip_Ticket_ID) != null
  @print 🛒 扫荡符|ID:(Dom_Skip_Ticket_ID)
 [if] (Dom_Skip_Ticket_ID) == null
- @print ❌ 扫荡符|ID:侦测失败
+ tm ❌ 扫荡符|ID:侦测失败
 
 [if] (Dom_Relive_Ticket_ID) != null
  @print 🛒 天师符|ID:(Dom_Relive_Ticket_ID)
 [if] (Dom_Relive_Ticket_ID) == null
- @print ❌ 天师符|ID:侦测失败
+ tm ❌ 天师符|ID:侦测失败
 
 [if] (Dom_Lingshou_ID) != null
  @print 🐾 灵兽:(Dom_Lingshou_Name)
  @print 🐾 ID:(Dom_Lingshou_ID)
 [if] (Dom_Lingshou_ID) == null
- @print ❌ 灵兽|ID:侦测失败
+ tm ❌ 灵兽|ID:侦测失败
 
 [if] (Dom_Companion_ID1) != null
  ($Now_Companion_Name1) = (Dom_Companion_Name1)
  ($Now_Companion_ID1) = (Dom_Companion_ID1)
  @print 🧍 (Dom_Companion_Name1)|ID:(Dom_Companion_ID1)
 [if] (Dom_Companion_ID1) == null
- @print ❌ 随从1|ID:侦测失败
+ tm ❌ 随从1|ID:侦测失败
 
 [if] (Dom_Companion_ID2) != null
  ($Now_Companion_Name2) = (Dom_Companion_Name2)
  ($Now_Companion_ID2) = (Dom_Companion_ID2)
  @print 🧍 (Dom_Companion_Name2)|ID:(Dom_Companion_ID2)
 [if] (Dom_Companion_ID2) == null
- @print ❌ 随从2|ID:侦测失败
+ tm ❌ 随从2|ID:侦测失败
 
 [if] (Dom_Companion_ID3) != null
  ($Now_Companion_Name3) = (Dom_Companion_Name3)
  ($Now_Companion_ID3) = (Dom_Companion_ID3)
  @print 🧍 (Dom_Companion_Name3)|ID:(Dom_Companion_ID3)
 [if] (Dom_Companion_ID3) == null
- @print ❌ 随从3|ID:侦测失败
+ tm ❌ 随从3|ID:侦测失败
 //存档名宣告------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ($Save_Daily_Buy_Skip_Ticket_100) = (:name)Daily_Buy_Skip_Ticket_100
 ($Save_Daily_Buy_Relive_Ticket_15) = (:name)Daily_Buy_Relive_Ticket_15
@@ -367,6 +365,9 @@
 [if] (Load_Daily_End) == 修炼
  ($Load_Daily_End) = 🧘修炼
 //选项设定------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#select ($Daily_Events_Choose) = <span style="color: #ff5900; font-weight: bold;">活动-节庆模式,❌跳过|🥮中秋|🎆国庆,❌跳过
+#select ($Daily_Null) = <span style="color: #ff5900; font-weight: bold;">活动-随从背包请留下一格空位,🔴确认|🔴确认,🔴确认
+
 #input ($Daily_Buy_Skip_Ticket_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--扫荡符ID,(Dom_Skip_Ticket_ID)
 #input ($Daily_Buy_Relive_Ticket_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--天师符ID,(Dom_Relive_Ticket_ID)
 #input ($Daily_Lingshou_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--出战中灵兽ID,(Dom_Lingshou_ID)
@@ -399,6 +400,8 @@
 #select ($Daily_Reset_Flag) = <span style="color: #e30707; font-weight: bold;">将本次视为新的一天,❌跳过|🔄重置,❌跳过
 #config
 //去符号------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@js ($Daily_Events_Choose) = '(Daily_Events_Choose)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+
 @js ($Daily_Buy_Skip_Ticket_100) = '(Daily_Buy_Skip_Ticket_100)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Buy_Relive_Ticket_15) = '(Daily_Buy_Relive_Ticket_15)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Buy_Pet_Ticket) = '(Daily_Buy_Pet_Ticket)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
@@ -509,6 +512,73 @@ info
 @task 完成5次灵兽互动 ($Task_Check_Lingshou_Interact)/5
 @task 完成5次灵兽探宝 ($Task_Check_Lingshou_Explore)/5
 @task 完成3次灵兽修行 ($Task_Check_Lingshou_Train)/3
+//活动模式-中秋------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+[if] (Daily_Events_Choose) == 中秋
+ rel (Now_Companion_ID1) wk
+ rel (Now_Companion_ID1) diaoyu
+ rel (Now_Companion_ID1) caiyao
+ rel (Now_Companion_ID2) wk
+ rel (Now_Companion_ID2) diaoyu
+ rel (Now_Companion_ID2) caiyao
+ rel (Now_Companion_ID3) wk
+ rel (Now_Companion_ID3) diaoyu
+ rel (Now_Companion_ID3) caiyao
+ @wait 500
+ ($Event_Check) = null
+ task zhongqiu fin
+ @tip 你领取了一枚|你今日($Event_Check)中秋节礼包。
+ @wait 500
+ [if] (Event_Check) == 已经领取过 || {b月饼o#}? < 5
+  tm 今日已领取过月饼，请自行注意。
+//
+ use {b月饼}?
+ @wait 500
+//
+ $to 扬州城-醉仙楼
+ @wait 500
+ go up
+ @wait 500
+ use {b月饼}?
+//
+ goto home
+ @until (:room) == 住房-院子
+ go northeast
+ @until (:room) == 住房-小花园
+ [if] (Now_Companion_ID1) != null
+  dc (Now_Companion_ID1) stopstate
+  @wait 500
+  trade (Now_Companion_ID1)
+  @wait 500
+  give (Now_Companion_ID1) 1 {b月饼}?
+  @wait 500
+  pack (Now_Companion_ID1)
+  @wait 500
+  dc (Now_Companion_ID1) use {d月饼}?
+  @wait 500
+//
+ [if] (Now_Companion_ID2) != null
+  dc (Now_Companion_ID2) stopstate
+  @wait 500
+  trade (Now_Companion_ID2)
+  @wait 500
+  give (Now_Companion_ID2) 1 {b月饼}?
+  @wait 500
+  pack (Now_Companion_ID2)
+  @wait 500
+  dc (Now_Companion_ID2) use {d月饼}?
+  @wait 500
+//
+ [if] (Now_Companion_ID3) != null
+  dc (Now_Companion_ID3) stopstate
+  @wait 500
+  trade (Now_Companion_ID3)
+  @wait 500
+  give (Now_Companion_ID3) 1 {b月饼}?
+  @wait 500
+  pack (Now_Companion_ID3)
+  @wait 500
+  dc (Now_Companion_ID3) use {d月饼}?
+  @wait 500
 //随从指派------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [if] (Now_Companion_ID1) != null
  rel (Now_Companion_ID1) wk
