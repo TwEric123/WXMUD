@@ -1,11 +1,14 @@
-//流程更新日期：2026/09/25  仅支持内置插件WSMUD2 26.3.5
+//流程更新日期：2026/09/28  仅支持内置插件WSMUD2 26.3.5
 //1.服务器卡顿、延迟可能造成流程判断异常，请自行注意。2.角色改名后需重新设置。3.灵兽秘境中自动出招会失效，请注意别被打死。
 //4.黄金不够会造成购买扫荡符、运镖等流程卡住，请自行备好充足黄金。5.背包空间不足可能会产生问题，请自行注意背包空间。
-//如有BUG反馈、提供功能建议，请至QQ群(629421026)@"夜话"或私聊。(服务器卡顿、断线造成的问题难以解决。)
-//本流程免费，旨在日常减负，请勿用作商业用途。
-//修复记录->增加节庆日常选项、当ID侦测失败改为队伍频道提醒。
+//6.自动刷新当铺请在插件中先设定好需要购买的物品，本流程只进行刷新。
+//如有BUG反馈、提供功能建议，请至QQ群(629421026)@夜话。(服务器卡顿、断线造成的问题难以解决。)
+//本流程免费，旨在日常减负，请勿用作商业用途，喜欢本流程欢迎赞助支持。
+//修复记录->增加当铺每日扫荡功能、设定存档模式功能
+//修复记录->存档编辑等区块合并一起方便整理
+//修复记录->@js ($Daily_Reset_Flag) = '(Daily_Reset_Flag)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 //自动更新------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-($Now_Version) = 2026092501
+($Now_Version) = 2026092801
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Task_Flow_Name) = A1日常
@@ -30,7 +33,7 @@
  [exit]
 [if] (Now_Version) != stop && (Net_Version) != null && (Net_Version) != ""
  @print 🌐 网络连接正常，远程版本号为：(Net_Version)
- @print 🎑 祝各位中秋快乐！增加节庆日常选项、当ID侦测失败改为队伍频道提醒。
+ @print 📰 增加当铺每日扫荡功能、设定存档模式功能(与作为新的一天并入特殊功能选项)、修复特殊功能未正确运行问题。
  [if] (Net_Version) == (Now_Version)
   @print 🎉 当前已是最新版本，无需更新。
  [if] (Net_Version) != (Now_Version)
@@ -192,85 +195,65 @@
  @print 🧍 (Dom_Companion_Name3)|ID:(Dom_Companion_ID3)
 [if] (Dom_Companion_ID3) == null
  tm ❌ 随从3|ID:侦测失败
-//存档名宣告------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//存档读取------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+($Save_Daily_Buy_Refresh_Pawnshop) = (:name)Daily_Buy_Refresh_Pawnshop
+@js ($Load_Daily_Buy_Refresh_Pawnshop) = WSStore.get('(Save_Daily_Buy_Refresh_Pawnshop)')
+[if] (Load_Daily_Buy_Refresh_Pawnshop) == null || (Load_Daily_Buy_Refresh_Pawnshop) == 跳过
+ ($Load_Daily_Buy_Refresh_Pawnshop) = ❌跳过
+[if] (Load_Daily_Buy_Refresh_Pawnshop) == 刷新
+ ($Load_Daily_Buy_Refresh_Pawnshop) = 🔄刷新
+
 ($Save_Daily_Buy_Skip_Ticket_100) = (:name)Daily_Buy_Skip_Ticket_100
-($Save_Daily_Buy_Relive_Ticket_15) = (:name)Daily_Buy_Relive_Ticket_15
-($Save_Daily_Buy_Pet_Ticket) = (:name)Daily_Buy_Pet_Ticket
-($Save_Daily_Companion_Work) = (:name)Daily_Companion_Work
-($Save_Daily_Shitu_Greet) = (:name)Daily_Shitu_Greet
-($Save_Daily_Job_Greet) = (:name)Daily_Job_Greet
-($Save_Daily_Job_Reward) = (:name)Daily_Job_Reward
-($Save_Daily_Dungeon_Yanziwu) = (:name)Daily_Dungeon_Yanziwu
-($Save_Daily_Dungeon_FB_Name) = (:name)Daily_Dungeon_FB_Name
-($Save_Daily_Dungeon_FB_Count) = (:name)Daily_Dungeon_FB_Count
-($Save_Daily_Penglai_Search) = (:name)Daily_Penglai_Search
-($Save_Daily_Penglai_Put) = (:name)Daily_Penglai_Put
-($Save_Daily_Battle_Weapon) = (:name)Daily_Battle_Weapon
-($Save_Daily_Battle_Auto) = (:name)Daily_Battle_Auto
-($Save_Daily_Lingshou_Trial) = (:name)Daily_Lingshou_Trial
-($Save_Daily_Lingshou_Trial_Difficulty) = (:name)Daily_Lingshou_Trial_Difficulty
-($Save_Daily_Yunbiao_Auto) = (:name)Daily_Yunbiao_Auto
-($Save_Daily_Yunbiao_Free) = (:name)Daily_Yunbiao_Free
-($Save_Daily_Yunbiao_Type) = (:name)Daily_Yunbiao_Type
-($Save_Daily_Yunbiao_Car) = (:name)Daily_Yunbiao_Car
-($Save_Daily_Lingshou_Interact) = (:name)Daily_Lingshou_Interact
-($Save_Daily_Lingshou_Explore) = (:name)Daily_Lingshou_Explore
-($Save_Daily_Lingshou_Train) = (:name)Daily_Lingshou_Train
-($Save_Daily_End) = (:name)Daily_End
-//读取存档------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 @js ($Load_Daily_Buy_Skip_Ticket_100) = WSStore.get('(Save_Daily_Buy_Skip_Ticket_100)')
-@js ($Load_Daily_Buy_Relive_Ticket_15) = WSStore.get('(Save_Daily_Buy_Relive_Ticket_15)')
-@js ($Load_Daily_Buy_Pet_Ticket) = WSStore.get('(Save_Daily_Buy_Pet_Ticket)')
-@js ($Load_Daily_Companion_Work) = WSStore.get('(Save_Daily_Companion_Work)')
-@js ($Load_Daily_Shitu_Greet) = WSStore.get('(Save_Daily_Shitu_Greet)')
-@js ($Load_Daily_Job_Greet) = WSStore.get('(Save_Daily_Job_Greet)')
-@js ($Load_Daily_Job_Reward) = WSStore.get('(Save_Daily_Job_Reward)')
-@js ($Load_Daily_Dungeon_Yanziwu) = WSStore.get('(Save_Daily_Dungeon_Yanziwu)')
-@js ($Load_Daily_Dungeon_FB_Name) = WSStore.get('(Save_Daily_Dungeon_FB_Name)')
-@js ($Load_Daily_Dungeon_FB_Count) = WSStore.get('(Save_Daily_Dungeon_FB_Count)')
-@js ($Load_Daily_Penglai_Search) = WSStore.get('(Save_Daily_Penglai_Search)')
-@js ($Load_Daily_Penglai_Put) = WSStore.get('(Save_Daily_Penglai_Put)')
-@js ($Load_Daily_Battle_Weapon) = WSStore.get('(Save_Daily_Battle_Weapon)')
-@js ($Load_Daily_Battle_Auto) = WSStore.get('(Save_Daily_Battle_Auto)')
-@js ($Load_Daily_Lingshou_Trial) = WSStore.get('(Save_Daily_Lingshou_Trial)')
-@js ($Load_Daily_Lingshou_Trial_Difficulty) = WSStore.get('(Save_Daily_Lingshou_Trial_Difficulty)')
-@js ($Load_Daily_Yunbiao_Auto) = WSStore.get('(Save_Daily_Yunbiao_Auto)')
-@js ($Load_Daily_Yunbiao_Free) = WSStore.get('(Save_Daily_Yunbiao_Free)')
-@js ($Load_Daily_Yunbiao_Type) = WSStore.get('(Save_Daily_Yunbiao_Type)')
-@js ($Load_Daily_Yunbiao_Car) = WSStore.get('(Save_Daily_Yunbiao_Car)')
-@js ($Load_Daily_Lingshou_Interact) = WSStore.get('(Save_Daily_Lingshou_Interact)')
-@js ($Load_Daily_Lingshou_Explore) = WSStore.get('(Save_Daily_Lingshou_Explore)')
-@js ($Load_Daily_Lingshou_Train) = WSStore.get('(Save_Daily_Lingshou_Train)')
-@js ($Load_Daily_End) = WSStore.get('(Save_Daily_End)')
-//存档编辑------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [if] (Load_Daily_Buy_Skip_Ticket_100) == null || (Load_Daily_Buy_Skip_Ticket_100) == 跳过
  ($Load_Daily_Buy_Skip_Ticket_100) = ❌跳过
 [if] (Load_Daily_Buy_Skip_Ticket_100) == 购买
  ($Load_Daily_Buy_Skip_Ticket_100) = 🛒购买
+
+($Save_Daily_Buy_Relive_Ticket_15) = (:name)Daily_Buy_Relive_Ticket_15
+@js ($Load_Daily_Buy_Relive_Ticket_15) = WSStore.get('(Save_Daily_Buy_Relive_Ticket_15)')
 [if] (Load_Daily_Buy_Relive_Ticket_15) == null || (Load_Daily_Buy_Relive_Ticket_15) == 跳过
  ($Load_Daily_Buy_Relive_Ticket_15) = ❌跳过
 [if] (Load_Daily_Buy_Relive_Ticket_15) == 购买
  ($Load_Daily_Buy_Relive_Ticket_15) = 🛒购买
+
+($Save_Daily_Buy_Pet_Ticket) = (:name)Daily_Buy_Pet_Ticket
+@js ($Load_Daily_Buy_Pet_Ticket) = WSStore.get('(Save_Daily_Buy_Pet_Ticket)')
 [if] (Load_Daily_Buy_Pet_Ticket) == null || (Load_Daily_Buy_Pet_Ticket) == 跳过
  ($Load_Daily_Buy_Pet_Ticket) = ❌跳过
 [if] (Load_Daily_Buy_Pet_Ticket) == 购买
  ($Load_Daily_Buy_Pet_Ticket) = 🛒购买
+
+($Save_Daily_Companion_Work) = (:name)Daily_Companion_Work
+@js ($Load_Daily_Companion_Work) = WSStore.get('(Save_Daily_Companion_Work)')
 [if] (Load_Daily_Companion_Work) == null || (Load_Daily_Companion_Work) == 跳过
  ($Load_Daily_Companion_Work) = ❌跳过
 [if] (Load_Daily_Companion_Work) == 自动
  ($Load_Daily_Companion_Work) = ⚡自动
+
+($Save_Daily_Shitu_Greet) = (:name)Daily_Shitu_Greet
+@js ($Load_Daily_Shitu_Greet) = WSStore.get('(Save_Daily_Shitu_Greet)')
 [if] (Load_Daily_Shitu_Greet) == null || (Load_Daily_Shitu_Greet) == 跳过
  ($Load_Daily_Shitu_Greet) = ❌跳过
 [if] (Load_Daily_Shitu_Greet) == 请安
  ($Load_Daily_Shitu_Greet) = 🙏请安
+
+($Save_Daily_Job_Greet) = (:name)Daily_Job_Greet
+@js ($Load_Daily_Job_Greet) = WSStore.get('(Save_Daily_Job_Greet)')
 [if] (Load_Daily_Job_Greet) == null || (Load_Daily_Job_Greet) == 跳过
  ($Load_Daily_Job_Greet) = ❌跳过
 [if] (Load_Daily_Job_Greet) == 请安
  ($Load_Daily_Job_Greet) = 🙏请安
+
+($Save_Daily_Job_Reward) = (:name)Daily_Job_Reward
+@js ($Load_Daily_Job_Reward) = WSStore.get('(Save_Daily_Job_Reward)')
 [if] (Load_Daily_Job_Reward) == null || (Load_Daily_Job_Reward) == 跳过
  ($Load_Daily_Job_Reward) = ❌跳过
 [if] (Load_Daily_Job_Reward) == 领取
  ($Load_Daily_Job_Reward) = 🎁领取
+
+($Save_Daily_Dungeon_Yanziwu) = (:name)Daily_Dungeon_Yanziwu
+@js ($Load_Daily_Dungeon_Yanziwu) = WSStore.get('(Save_Daily_Dungeon_Yanziwu)')
 [if] (Load_Daily_Dungeon_Yanziwu) == null || (Load_Daily_Dungeon_Yanziwu) == 跳过
  ($Load_Daily_Dungeon_Yanziwu) = ❌跳过
 [if] (Load_Daily_Dungeon_Yanziwu) == 普通
@@ -278,26 +261,45 @@
 [if] (Load_Daily_Dungeon_Yanziwu) == 困难
  ($Load_Daily_Dungeon_Yanziwu) = 🔴困难
 
+($Save_Daily_Dungeon_FB_Name) = (:name)Daily_Dungeon_FB_Name
+@js ($Load_Daily_Dungeon_FB_Name) = WSStore.get('(Save_Daily_Dungeon_FB_Name)')
 @js ($Load_Daily_Dungeon_FB_Name) = ((v = '(Load_Daily_Dungeon_FB_Name)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()) => (!v || v === '跳过' || v === 'null') ? '❌跳过' : (v.startsWith('困难') ? '🔴' : '🟢') + v)()
+
+($Save_Daily_Dungeon_FB_Count) = (:name)Daily_Dungeon_FB_Count
+@js ($Load_Daily_Dungeon_FB_Count) = WSStore.get('(Save_Daily_Dungeon_FB_Count)')
 [if] (Load_Daily_Dungeon_FB_Count) == null
  ($Load_Daily_Dungeon_FB_Count) = 0
 
+($Save_Daily_Penglai_Search) = (:name)Daily_Penglai_Search
+@js ($Load_Daily_Penglai_Search) = WSStore.get('(Save_Daily_Penglai_Search)')
 [if] (Load_Daily_Penglai_Search) == null || (Load_Daily_Penglai_Search) == 跳过
  ($Load_Daily_Penglai_Search) = ❌跳过
 [if] (Load_Daily_Penglai_Search) == 搜索
  ($Load_Daily_Penglai_Search) = 🔍搜索
+
+($Save_Daily_Penglai_Put) = (:name)Daily_Penglai_Put
+@js ($Load_Daily_Penglai_Put) = WSStore.get('(Save_Daily_Penglai_Put)')
 [if] (Load_Daily_Penglai_Put) == null || (Load_Daily_Penglai_Put) == 跳过
  ($Load_Daily_Penglai_Put) = ❌跳过
 [if] (Load_Daily_Penglai_Put) == 观山
  ($Load_Daily_Penglai_Put) = ⛰️观山
 [if] (Load_Daily_Penglai_Put) == 临水
  ($Load_Daily_Penglai_Put) = 🌊临水
+
+($Save_Daily_Battle_Weapon) = (:name)Daily_Battle_Weapon
+@js ($Load_Daily_Battle_Weapon) = WSStore.get('(Save_Daily_Battle_Weapon)')
 [if] (Load_Daily_Battle_Weapon) == null
  ($Load_Daily_Battle_Weapon) = 龙纹剑
+
+($Save_Daily_Battle_Auto) = (:name)Daily_Battle_Auto
+@js ($Load_Daily_Battle_Auto) = WSStore.get('(Save_Daily_Battle_Auto)')
 [if] (Load_Daily_Battle_Auto) == null || (Load_Daily_Battle_Auto) == 跳过
  ($Load_Daily_Battle_Auto) = ❌跳过
 [if] (Load_Daily_Battle_Auto) == 自动
  ($Load_Daily_Battle_Auto) = ⚔️自动
+
+($Save_Daily_Lingshou_Trial) = (:name)Daily_Lingshou_Trial
+@js ($Load_Daily_Lingshou_Trial) = WSStore.get('(Save_Daily_Lingshou_Trial)')
 [if] (Load_Daily_Lingshou_Trial) == null || (Load_Daily_Lingshou_Trial) == 跳过
  ($Load_Daily_Lingshou_Trial) = ❌跳过
 [if] (Load_Daily_Lingshou_Trial) == 兽魂
@@ -312,6 +314,9 @@
  ($Load_Daily_Lingshou_Trial) = 🌱成长
 [if] (Load_Daily_Lingshou_Trial) == 远古
  ($Load_Daily_Lingshou_Trial) = 🏛️远古
+
+($Save_Daily_Lingshou_Trial_Difficulty) = (:name)Daily_Lingshou_Trial_Difficulty
+@js ($Load_Daily_Lingshou_Trial_Difficulty) = WSStore.get('(Save_Daily_Lingshou_Trial_Difficulty)')
 [if] (Load_Daily_Lingshou_Trial_Difficulty) == null || (Load_Daily_Lingshou_Trial_Difficulty) == 普通
  ($Load_Daily_Lingshou_Trial_Difficulty) = ⚪普通
 [if] (Load_Daily_Lingshou_Trial_Difficulty) == 困难
@@ -324,18 +329,30 @@
  ($Load_Daily_Lingshou_Trial_Difficulty) = 🟠炼狱
 [if] (Load_Daily_Lingshou_Trial_Difficulty) == 深渊
  ($Load_Daily_Lingshou_Trial_Difficulty) = 🔴深渊
+
+($Save_Daily_Yunbiao_Auto) = (:name)Daily_Yunbiao_Auto
+@js ($Load_Daily_Yunbiao_Auto) = WSStore.get('(Save_Daily_Yunbiao_Auto)')
 [if] (Load_Daily_Yunbiao_Auto) == null || (Load_Daily_Yunbiao_Auto) == 跳过
  ($Load_Daily_Yunbiao_Auto) = ❌跳过
 [if] (Load_Daily_Yunbiao_Auto) == 开启
  ($Load_Daily_Yunbiao_Auto) = 🚛开启
+
+($Save_Daily_Yunbiao_Free) = (:name)Daily_Yunbiao_Free
+@js ($Load_Daily_Yunbiao_Free) = WSStore.get('(Save_Daily_Yunbiao_Free)')
 [if] (Load_Daily_Yunbiao_Free) == null || (Load_Daily_Yunbiao_Free) == 免费
  ($Load_Daily_Yunbiao_Free) = 🎁免费
 [if] (Load_Daily_Yunbiao_Free) == 元宝
  ($Load_Daily_Yunbiao_Free) = 💸元宝
+
+($Save_Daily_Yunbiao_Type) = (:name)Daily_Yunbiao_Type
+@js ($Load_Daily_Yunbiao_Type) = WSStore.get('(Save_Daily_Yunbiao_Type)')
 [if] (Load_Daily_Yunbiao_Type) == null || (Load_Daily_Yunbiao_Type) == 安全
  ($Load_Daily_Yunbiao_Type) = 🧍安全
 [if] (Load_Daily_Yunbiao_Type) == 高危
  ($Load_Daily_Yunbiao_Type) = 🧑‍🤝‍🧑高危
+
+($Save_Daily_Yunbiao_Car) = (:name)Daily_Yunbiao_Car
+@js ($Load_Daily_Yunbiao_Car) = WSStore.get('(Save_Daily_Yunbiao_Car)')
 [if] (Load_Daily_Yunbiao_Car) == null || (Load_Daily_Yunbiao_Car) == 皇家贡镖
  ($Load_Daily_Yunbiao_Car) = 👑皇家贡镖
 [if] (Load_Daily_Yunbiao_Car) == 普通民镖
@@ -346,18 +363,30 @@
  ($Load_Daily_Yunbiao_Car) = 💎珍宝玉镖
 [if] (Load_Daily_Yunbiao_Car) == 九霄仙贡镖
  ($Load_Daily_Yunbiao_Car) = 🌟九霄仙贡镖
+
+($Save_Daily_Lingshou_Interact) = (:name)Daily_Lingshou_Interact
+@js ($Load_Daily_Lingshou_Interact) = WSStore.get('(Save_Daily_Lingshou_Interact)')
 [if] (Load_Daily_Lingshou_Interact) == null || (Load_Daily_Lingshou_Interact) == 跳过
  ($Load_Daily_Lingshou_Interact) = ❌跳过
 [if] (Load_Daily_Lingshou_Interact) == 互动
  ($Load_Daily_Lingshou_Interact) = 🐾互动
+
+($Save_Daily_Lingshou_Explore) = (:name)Daily_Lingshou_Explore
+@js ($Load_Daily_Lingshou_Explore) = WSStore.get('(Save_Daily_Lingshou_Explore)')
 [if] (Load_Daily_Lingshou_Explore) == null || (Load_Daily_Lingshou_Explore) == 跳过
  ($Load_Daily_Lingshou_Explore) = ❌跳过
 [if] (Load_Daily_Lingshou_Explore) == 探宝
  ($Load_Daily_Lingshou_Explore) = 🗺️探宝
+
+($Save_Daily_Lingshou_Train) = (:name)Daily_Lingshou_Train
+@js ($Load_Daily_Lingshou_Train) = WSStore.get('(Save_Daily_Lingshou_Train)')
 [if] (Load_Daily_Lingshou_Train) == null || (Load_Daily_Lingshou_Train) == 跳过
  ($Load_Daily_Lingshou_Train) = ❌跳过
 [if] (Load_Daily_Lingshou_Train) == 修行
  ($Load_Daily_Lingshou_Train) = 🧘修行
+
+($Save_Daily_End) = (:name)Daily_End
+@js ($Load_Daily_End) = WSStore.get('(Save_Daily_End)')
 [if] (Load_Daily_End) == null || (Load_Daily_End) == 挖矿
  ($Load_Daily_End) = ⛏️挖矿
 [if] (Load_Daily_End) == 跳过
@@ -371,9 +400,12 @@
 #input ($Daily_Buy_Skip_Ticket_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--扫荡符ID,(Dom_Skip_Ticket_ID)
 #input ($Daily_Buy_Relive_Ticket_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--天师符ID,(Dom_Relive_Ticket_ID)
 #input ($Daily_Lingshou_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--出战中灵兽ID,(Dom_Lingshou_ID)
+
+#select ($Daily_Buy_Refresh_Pawnshop) = <span style="color: #14b53a; font-weight: bold;">每日购买--当铺刷新,❌跳过|🔄刷新,(Load_Daily_Buy_Refresh_Pawnshop)
 #select ($Daily_Buy_Skip_Ticket_100) = <span style="color: #14b53a; font-weight: bold;">每日购买--扫荡符,❌跳过|🛒购买,(Load_Daily_Buy_Skip_Ticket_100)
 #select ($Daily_Buy_Relive_Ticket_15) = <span style="color: #14b53a; font-weight: bold;">每日购买--天师符,❌跳过|🛒购买,(Load_Daily_Buy_Relive_Ticket_15)
 #select ($Daily_Buy_Pet_Ticket) = <span style="color: #14b53a; font-weight: bold;">每日购买--驭兽符,❌跳过|🛒购买,(Load_Daily_Buy_Pet_Ticket)
+
 #select ($Daily_Companion_Work) = <span style="color: #00CC00; font-weight: bold;">随从--发呆检测(矿>鱼>药),❌跳过|⚡自动,(Load_Daily_Companion_Work)
 #select ($Daily_Shitu_Greet) = <span style="color: #13339e; font-weight: bold;">日常--师徒请安,❌跳过|🙏请安,(Load_Daily_Shitu_Greet)
 #select ($Daily_Job_Greet) = <span style="color: #13339e; font-weight: bold;">日常--门派请安,❌跳过|🙏请安,(Load_Daily_Job_Greet)
@@ -397,11 +429,12 @@
 #select ($Daily_Lingshou_Explore) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--探宝五次,❌跳过|🗺️探宝,(Load_Daily_Lingshou_Explore)
 #select ($Daily_Lingshou_Train) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--修行五次,❌跳过|🧘修行,(Load_Daily_Lingshou_Train)
 #select ($Daily_End) = <span style="color: #e30707; font-weight: bold;">结束时动作,⛏️挖矿|❌跳过|🧘修炼,(Load_Daily_End)
-#select ($Daily_Reset_Flag) = <span style="color: #e30707; font-weight: bold;">将本次视为新的一天,❌跳过|🔄重置,❌跳过
+#select ($Daily_Reset_Flag) = <span style="color: #e30707; font-weight: bold;">特殊功能,❌跳过|🔄设为新的一天|📁存档模式,❌跳过
 #config
 //去符号------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 @js ($Daily_Events_Choose) = '(Daily_Events_Choose)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 
+@js ($Daily_Buy_Refresh_Pawnshop) = '(Daily_Buy_Refresh_Pawnshop)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Buy_Skip_Ticket_100) = '(Daily_Buy_Skip_Ticket_100)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Buy_Relive_Ticket_15) = '(Daily_Buy_Relive_Ticket_15)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Buy_Pet_Ticket) = '(Daily_Buy_Pet_Ticket)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
@@ -427,7 +460,7 @@
 @js ($Daily_Lingshou_Explore) = '(Daily_Lingshou_Explore)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Lingshou_Train) = '(Daily_Lingshou_Train)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_End) = '(Daily_End)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
-@js ($Daily_Reset_Flag) = '(Daily_End)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Reset_Flag) = '(Daily_Reset_Flag)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 //除错------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [if] (Daily_Dungeon_FB_Name) != 跳过 && (Daily_Dungeon_FB_Count) > 50
  ($Daily_Dungeon_FB_Count) = 50
@@ -436,6 +469,7 @@
  ($Daily_Dungeon_FB_Count) = 1
  @print 扫荡次数最少1次，已重新设定为1次。
 //选项保存------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@js WSStore.set('(Save_Daily_Buy_Refresh_Pawnshop)','(Daily_Buy_Refresh_Pawnshop)')
 @js WSStore.set('(Save_Daily_Buy_Skip_Ticket_100)','(Daily_Buy_Skip_Ticket_100)')
 @js WSStore.set('(Save_Daily_Buy_Relive_Ticket_15)','(Daily_Buy_Relive_Ticket_15)')
 @js WSStore.set('(Save_Daily_Buy_Pet_Ticket)','(Daily_Buy_Pet_Ticket)')
@@ -464,6 +498,9 @@
 @js WSStore.set('(Save_Daily_End)','(Daily_End)')
 //流程开始------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 @cmdDelay 0
+[if] (Daily_Reset_Flag) == 存档模式
+ tm 📑 资料已保存，后续不执行。
+ [exit]
 state stop
 //状态检查
 ($Save_Info_Last_Time) = (:name)Info_Last_Time
@@ -494,7 +531,7 @@ state stop
  [if] (Info_Last_Time_Hour) < 5 && (Now_Hour) >= 5
   ($Info_Check_Cross5AM) = true
 //
-[if] (Daily_Reset_Flag) == 重置
+[if] (Daily_Reset_Flag) == 设为新的一天
  ($Info_Check_Cross5AM) = true
 [if] (Info_Check_Cross5AM) == true
  tm 📑 新的一天，开始自动日常
@@ -596,6 +633,30 @@ info
  rel (Now_Companion_ID3) caiyao
  @print ⚒️ 已指派 (Now_Companion_Name3) 去工作
 @wait 500
+//当铺刷新------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+[if] (Daily_Buy_Refresh_Pawnshop) == 刷新 && (Info_Check_Cross5AM) == true
+ $to 扬州城-当铺
+ @until (:room) == 扬州城-当铺
+ list {r唐楠}
+ [while] true
+  ($Buy_Refresh_Pawnshop_Check) == null
+  @wait 6000
+  refresh {r唐楠}
+  @tip 次加急上货需要($Buy_Refresh_Pawnshop_Check)两黄金|本店近日($Buy_Refresh_Pawnshop_Check)货物了
+  [if] (Buy_Refresh_Pawnshop_Check) == 10
+   give {r唐楠}? 100000 money
+  [if] (Buy_Refresh_Pawnshop_Check) == 20
+   give {r唐楠}? 200000 money
+  [if] (Buy_Refresh_Pawnshop_Check) == 30
+   give {r唐楠}? 300000 money
+  [if] (Buy_Refresh_Pawnshop_Check) == 40
+   give {r唐楠}? 400000 money
+  [if] (Buy_Refresh_Pawnshop_Check) == 50
+   give {r唐楠}? 500000 money
+  [if] (Buy_Refresh_Pawnshop_Check) == 60
+   give {r唐楠}? 600000 money
+  [if] (Buy_Refresh_Pawnshop_Check) == 就这么多
+   [break]
 //买扫荡符------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ($Buy_Skip_Ticket_Check) = null
 [if] (Daily_Buy_Skip_Ticket_100) == 购买 && (Info_Check_Cross5AM) == true
@@ -670,7 +731,9 @@ info
   @print 🏯 领取门派战奖励完成。
   @wait 1000
   sell all
+  @tip 你身上的杂物已经清理干净了
   store all
+  @tip 你将背包中的道具自动合并到仓库中已有的道具
   @wait 1000
 //买灵兽符------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [if] (Daily_Buy_Pet_Ticket) == 购买 && (Info_Check_Cross5AM) == true
@@ -820,9 +883,9 @@ lingshou jh train (Daily_Lingshou_ID)
   @wait 1000
   //自动存卖
   sell all
-  @wait 500
+  @tip 你身上的杂物已经清理干净了
   store all
-  @wait 500
+  @tip 你将背包中的道具自动合并到仓库中已有的道具
   //装备武器
   eq {b(Daily_Battle_Weapon)}?
   @wait 500
@@ -958,7 +1021,9 @@ lingshou jh train (Daily_Lingshou_ID)
  [if] (Now_Dungeon_Check) == 获
   @print ✅ 燕子坞扫荡成功。
   sell all
+  @tip 你身上的杂物已经清理干净了
   store all
+  @tip 你将背包中的道具自动合并到仓库中已有的道具
   @wait 1000
 [if] (Daily_Dungeon_Yanziwu) == 困难 && (Info_Check_Cross5AM) == true
  @wait 500
@@ -969,7 +1034,9 @@ lingshou jh train (Daily_Lingshou_ID)
  [if] (Now_Dungeon_Check) == 获
   @print ✅ 燕子坞扫荡成功。
   sell all
+  @tip 你身上的杂物已经清理干净了
   store all
+  @tip 你将背包中的道具自动合并到仓库中已有的道具
   @wait 1000
 //自动副本------------------------------------------------------------------------------
 ($Now_Dungeon_Check) = Null
