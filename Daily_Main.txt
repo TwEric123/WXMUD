@@ -1,4 +1,4 @@
-//流程更新日期：2026/09/28  仅支持内置插件WSMUD2 26.3.5
+//流程更新日期：2026/10/01  仅支持内置插件WSMUD2 26.3.5
 //1.服务器卡顿、延迟可能造成流程判断异常，请自行注意。2.角色改名后需重新设置。3.灵兽秘境中自动出招会失效，请注意别被打死。
 //4.黄金不够会造成购买扫荡符、运镖等流程卡住，请自行备好充足黄金。5.背包空间不足可能会产生问题，请自行注意背包空间。
 //6.自动刷新当铺请在插件中先设定好需要购买的物品，本流程只进行刷新。
@@ -8,7 +8,7 @@
 //修复记录->存档编辑等区块合并一起方便整理
 //修复记录->@js ($Daily_Reset_Flag) = '(Daily_Reset_Flag)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 //自动更新------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-($Now_Version) = 2026092801
+($Now_Version) = 2026100101
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Task_Flow_Name) = A1日常
@@ -33,7 +33,7 @@
  [exit]
 [if] (Now_Version) != stop && (Net_Version) != null && (Net_Version) != ""
  @print 🌐 网络连接正常，远程版本号为：(Net_Version)
- @print 📰 增加当铺每日扫荡功能、设定存档模式功能(与作为新的一天并入特殊功能选项)、修复特殊功能未正确运行问题。
+ @print 📰 祝各位国庆愉快！增加国庆活动自动领奖、听曲、点灯。1号凌晨5点后至8号凌晨5点前将会自动启用请注意
  [if] (Net_Version) == (Now_Version)
   @print 🎉 当前已是最新版本，无需更新。
  [if] (Net_Version) != (Now_Version)
@@ -393,8 +393,15 @@
  ($Load_Daily_End) = ❌跳过
 [if] (Load_Daily_End) == 修炼
  ($Load_Daily_End) = 🧘修炼
+//节庆自动选取
+@js window.now = new Date(); window.y = window.now.getFullYear();
+@js window.startTime = new Date(window.y, 9, 1, 5, 0, 0);
+@js window.endTime = new Date(window.y, 9, 8, 5, 0, 0);
+
+@js window.Default_Event = (window.now >= window.startTime && window.now < window.endTime) ? "🎆国庆" : "❌跳过";
+@js ($Default_Event_Val) = window.Default_Event;
 //选项设定------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#select ($Daily_Events_Choose) = <span style="color: #ff5900; font-weight: bold;">活动-节庆模式,❌跳过|🥮中秋|🎆国庆,❌跳过
+#select ($Daily_Events_Choose) = <span style="color: #ff5900; font-weight: bold;">活动-节庆模式,❌跳过|🥮中秋|🎆国庆,(Default_Event_Val)
 #select ($Daily_Null) = <span style="color: #ff5900; font-weight: bold;">活动-随从背包请留下一格空位,🔴确认|🔴确认,🔴确认
 
 #input ($Daily_Buy_Skip_Ticket_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--扫荡符ID,(Dom_Skip_Ticket_ID)
@@ -616,6 +623,18 @@ info
   @wait 500
   dc (Now_Companion_ID3) use {d月饼}?
   @wait 500
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+[if] (Daily_Events_Choose) == 国庆
+ task zhongqiu fin
+ @wait 500
+ jh fam 0 start
+ @until (:room) == 扬州城-广场
+ denghui light
+ @tip 你接过纸灯，拢着袖口挡住风，将灯芯点着。|你今日已经点过灯了
+ $to 扬州城-醉仙楼
+ @until (:room) == 扬州城-醉仙楼
+ listen {r柳三弦}
+ @tip 你获得了三张戏票|今日已经领过戏票
 //随从指派------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [if] (Now_Companion_ID1) != null
  rel (Now_Companion_ID1) wk
