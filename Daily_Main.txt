@@ -1,12 +1,12 @@
-//流程更新日期：2026/10/07  仅支持内置插件WSMUD2 26.3.5
+//流程更新日期：2026/10/09  仅支持内置插件WSMUD2 26.3.5
 //1.服务器卡顿、延迟可能造成流程判断异常，请自行注意。2.角色改名后需重新设置。3.灵兽秘境中自动出招会失效，请注意别被打死。
 //4.黄金不够会造成购买扫荡符、运镖等流程卡住，请自行备好充足黄金。5.背包空间不足可能会产生问题，请自行注意背包空间。
 //6.自动刷新当铺请在插件中先设定好需要购买的物品，本流程只进行刷新。
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@夜话。(服务器卡顿、断线造成的问题难以解决。)
 //本流程免费，旨在日常减负，请勿用作商业用途，喜欢本流程欢迎赞助支持。
-//修复记录->修复首席弟子执行请安后卡住问题、修复无门无派侠士领取门派奖励路径。
+//修复记录->[if] (Now_Job_Py) == SHAOLIN
 //自动更新------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-($Now_Version) = 2026100701
+($Now_Version) = 2026100901
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Task_Flow_Name) = A1日常
@@ -31,7 +31,7 @@
  [exit]
 [if] (Now_Version) != stop && (Net_Version) != null && (Net_Version) != ""
  @print 🌐 网络连接正常，远程版本号为：(Net_Version)
- @print 📰 祝各位国庆愉快！修复首席弟子执行请安后卡住问题、修复无门无派侠士领取门派奖励路径。
+ @print 📰 暂时解决10月8日更新后，少林派领取门派奖励指令无效问题。
  [if] (Net_Version) == (Now_Version)
   @print 🎉 当前已是最新版本，无需更新。
  [if] (Net_Version) != (Now_Version)
@@ -768,7 +768,21 @@ info
    store all
    @tip 你将背包中的道具自动合并到仓库中已有的道具
    @wait 1000
- [if] (Now_Job_Py) != null
+ [if] (Now_Job_Py) == SHAOLIN
+  goto fam2 SHAOLIN
+  @until (:room) == 少林派-山门殿
+  mp_reward {r门派后勤管理员%}
+  @wait 1000
+  mp_reward {r门派后勤管理员%}
+  @tip 你今日的门派战击杀奖励次数已经领完了。|门派战利品需门派职位达到护法后领取。
+  @print 🏯 领取门派战奖励完成。
+  @wait 1000
+  sell all
+  @tip 你身上的杂物已经清理干净了
+  store all
+  @tip 你将背包中的道具自动合并到仓库中已有的道具
+  @wait 1000
+ [if] (Now_Job_Py) != null && (Now_Job_Py) != SHAOLIN
   events (Now_Job_Py)_settle
   @wait 1000
   events (Now_Job_Py)_settle
