@@ -7,8 +7,9 @@
 //更新记录->增加慈航、阴阳谷、炼狱熔炉每日扫荡
 //更新记录->增加灵兽副本选择(混沌、鸿蒙)
 //更新记录->修复驭兽符购买问题
+//更新记录->修复灵兽副本记录问题
 //自动更新------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-($Now_Version) = 2026111301
+($Now_Version) = 2026111302
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Task_Flow_Name) = A1日常
@@ -314,6 +315,11 @@
  ($Load_Daily_Lingshou_Trial) = 🌱成长
 [if] (Load_Daily_Lingshou_Trial) == 远古
  ($Load_Daily_Lingshou_Trial) = 🏛️远古
+[if] (Load_Daily_Lingshou_Trial) == 混沌
+ ($Load_Daily_Lingshou_Trial) = 🕳️混沌
+[if] (Load_Daily_Lingshou_Trial) == 鸿蒙
+ ($Load_Daily_Lingshou_Trial) = 🌌鸿蒙
+
 
 ($Save_Daily_Lingshou_Trial_Difficulty) = (:name)Daily_Lingshou_Trial_Difficulty
 @js ($Load_Daily_Lingshou_Trial_Difficulty) = WSStore.get('(Save_Daily_Lingshou_Trial_Difficulty)')
