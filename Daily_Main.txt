@@ -1,12 +1,14 @@
-//流程更新日期：2026/10/09  仅支持内置插件WSMUD2 26.3.6
+//流程更新日期：2026/11/13  仅支持内置插件WSMUD2 26.3.6
 //1.服务器卡顿、延迟可能造成流程判断异常，请自行注意。2.角色改名后需重新设置。3.灵兽秘境中自动出招会失效，请注意别被打死。
 //4.黄金不够会造成购买扫荡符、运镖等流程卡住，请自行备好充足黄金。5.背包空间不足可能会产生问题，请自行注意背包空间。
 //6.自动刷新当铺请在插件中先设定好需要购买的物品，本流程只进行刷新。
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@夜话。(服务器卡顿、断线造成的问题难以解决。)
 //本流程免费，旨在日常减负，请勿用作商业用途，喜欢本流程欢迎赞助支持。
-//修复记录->门派战奖励领取方式更改
+//更新记录->增加慈航、阴阳谷、炼狱熔炉每日扫荡
+//更新记录->增加灵兽副本选择(混沌、鸿蒙)
+//更新记录->修复驭兽符购买问题
 //自动更新------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-($Now_Version) = 2026100902
+($Now_Version) = 2026111301
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Task_Flow_Name) = A1日常
@@ -31,7 +33,7 @@
  [exit]
 [if] (Now_Version) != stop && (Net_Version) != null && (Net_Version) != ""
  @print 🌐 网络连接正常，远程版本号为：(Net_Version)
- @print 📰 更改门派战奖励领取方式，统一改为直接找后勤(后勤死亡将会原地等待重生)
+ @print 📰 增加慈航、阴阳谷、炼狱熔炉每日扫荡(以及另外给所有副本普/困扫荡结果加上提示)、增加灵兽副本选择(混沌、鸿蒙)、修复驭兽符购买问题
  [if] (Net_Version) == (Now_Version)
   @print 🎉 当前已是最新版本，无需更新。
  [if] (Net_Version) != (Now_Version)
@@ -417,14 +419,14 @@
 #select ($Daily_Job_Reward) = <span style="color: #13339e; font-weight: bold;">日常--门派物资,❌跳过|🎁领取,(Load_Daily_Job_Reward)
 #select ($Daily_Dungeon_Yanziwu) = <span style="color: #990099; font-weight: bold;">副本--燕子坞扫荡五次,❌跳过|🟢普通|🔴困难,(Load_Daily_Dungeon_Yanziwu)
 
-#select ($Daily_Dungeon_FB_Name) = <span style="color: #990099; font-weight: bold;">副本--每日扫荡,❌跳过|🟢树林|🟢普通财主家|🔴困难财主家|🟢流氓巷|🟢丽春院|🟢兵营|🟢庄府|🟢鳌拜府|🟢天地会|🟢神龙教|🟢关外|🟢温府|🟢五毒教|🟢恒山|🟢青城山|🟢衡山|🟢泰山|🟢嵩山|🟢云梦沼泽|🟢普通桃花岛|🔴困难桃花岛|🟢白驼山|🟢星宿海|🟢普通冰火岛|🔴困难冰火岛|🟢普通移花宫|🔴困难移花宫|🟢普通燕子坞|🔴困难燕子坞|🟢普通黑木崖|🔴困难黑木崖|🟢普通缥缈峰|🔴困难缥缈峰|🟢光明顶|🟢普通天龙寺|🔴困难天龙寺|🟢血刀门|🟢普通古墓派|🔴困难古墓派|🟢华山论剑|🟢侠客岛|🟢普通净念禅宗|🔴困难净念禅宗|🟢普通遗忘墓地|🔴困难遗忘墓地|🟢普通地下监狱|🔴困难地下监狱,(Load_Daily_Dungeon_FB_Name)
+#select ($Daily_Dungeon_FB_Name) = <span style="color: #990099; font-weight: bold;">副本--每日扫荡,❌跳过|🟢树林|🟢普通财主家|🔴困难财主家|🟢流氓巷|🟢丽春院|🟢兵营|🟢庄府|🟢鳌拜府|🟢天地会|🟢神龙教|🟢关外|🟢温府|🟢五毒教|🟢恒山|🟢青城山|🟢衡山|🟢泰山|🟢嵩山|🟢云梦沼泽|🟢普通桃花岛|🔴困难桃花岛|🟢白驼山|🟢星宿海|🟢普通冰火岛|🔴困难冰火岛|🟢普通移花宫|🔴困难移花宫|🟢普通燕子坞|🔴困难燕子坞|🟢普通黑木崖|🔴困难黑木崖|🟢普通缥缈峰|🔴困难缥缈峰|🟢光明顶|🟢普通天龙寺|🔴困难天龙寺|🟢血刀门|🟢普通古墓派|🔴困难古墓派|🟢华山论剑|🟢侠客岛|🟢普通净念禅宗|🔴困难净念禅宗|🟢普通慈航静斋|🔴困难慈航静斋|🟢阴阳谷|🟢普通遗忘墓地|🔴困难遗忘墓地|🟢普通地下监狱|🔴困难地下监狱|🟢普通炼狱熔炉|🔴困难炼狱熔炉,(Load_Daily_Dungeon_FB_Name)
 #input ($Daily_Dungeon_FB_Count) = <span style="color: #990099; font-weight: bold;">副本--每日扫荡次数,(Load_Daily_Dungeon_FB_Count)
 
 #select ($Daily_Penglai_Search) = <span style="color: #0f9994; font-weight: bold;">蓬莱岛--搜索,❌跳过|🔍搜索,(Load_Daily_Penglai_Search)
 #select ($Daily_Penglai_Put) = <span style="color: #0f9994; font-weight: bold;">蓬莱岛--观山/临水,❌跳过|⛰️观山|🌊临水,(Load_Daily_Penglai_Put)
 #input ($Daily_Battle_Weapon) = <span style="color: #990f59; font-weight: bold;">战斗--使用武器(灵兽秘境、高危镖),(Load_Daily_Battle_Weapon)
 #select ($Daily_Battle_Auto) = <span style="color: #990f59; font-weight: bold;">战斗--自动出招,❌跳过|⚔️自动,(Load_Daily_Battle_Auto)
-#select ($Daily_Lingshou_Trial) = <span style="color: #876d0c; font-weight: bold;">灵兽秘境--探索,❌跳过|👻兽魂|🧥兽装|🩸血脉|✨神通|🌱成长|🏛️远古,(Load_Daily_Lingshou_Trial)
+#select ($Daily_Lingshou_Trial) = <span style="color: #876d0c; font-weight: bold;">灵兽秘境--探索,❌跳过|👻兽魂|🧥兽装|🩸血脉|✨神通|🌱成长|🏛️远古|🕳️混沌|🌌鸿蒙,(Load_Daily_Lingshou_Trial)
 #select ($Daily_Lingshou_Trial_Difficulty) = <span style="color: #876d0c; font-weight: bold;">灵兽秘境--难度,⚪普通|🟢困难|🔵噩梦|🟡地狱|🟠炼狱|🔴深渊,(Load_Daily_Lingshou_Trial_Difficulty)
 #select ($Daily_Yunbiao_Auto)= <span style="color: #75076c; font-weight: bold;">自动运镖--运镖(建议隐藏玩家防卡死),❌跳过|🚛开启,(Load_Daily_Yunbiao_Auto)
 #select ($Daily_Yunbiao_Free)= <span style="color: #75076c; font-weight: bold;">自动运镖--元宝运镖选择(谨慎选择),🎁免费|💸元宝,(Load_Daily_Yunbiao_Free)
@@ -785,12 +787,15 @@ info
 //买灵兽符------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [if] (Daily_Buy_Pet_Ticket) == 购买 && (Info_Check_Cross5AM) == true
  jh fam lingshou start
+ @until (:room) == 御灵谷-御灵谷入口
  go north
+ @until (:room) == 御灵谷-灵兽洞天
  go west
+ @until (:room) == 御灵谷-兽痕石台
  @wait 1000
- lingshou_yushoufu_shop {r兽痕石守}?
+ lingshou_gold_shop {r陆青山}?
  @wait 500
- buy 10 lingshou_yushoufu from {r兽痕石守}?
+ buy 10 lingshou_yushoufu from {r陆青山}?
  @wait 1000
 //蓬莱区域------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [if] (Info_Check_Cross5AM) == true
@@ -849,6 +854,10 @@ lingshou jh train (Daily_Lingshou_ID)
   ($Now_Lingshou_Trial) = growth
  [if] (Daily_Lingshou_Trial) == 远古
   ($Now_Lingshou_Trial) = relic
+ [if] (Daily_Lingshou_Trial) == 混沌
+  ($Now_Lingshou_Trial) = chaos
+ [if] (Daily_Lingshou_Trial) == 鸿蒙
+  ($Now_Lingshou_Trial) = hongmeng
  //
  [if] (Daily_Lingshou_Trial_Difficulty) == 普通
   ($Now_Lingshou_Trial_Difficulty) = normal
@@ -1102,18 +1111,18 @@ lingshou jh train (Daily_Lingshou_ID)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本财主家还没解锁!|你需要财主家(普通)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 财主家扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 普通财主家扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 财主家扫荡成功。
+  @print ✅ 普通财主家扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 困难财主家 && (Info_Check_Cross5AM) == true
  cr cuifu 1 (Daily_Dungeon_FB_Count)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本财主家还没解锁!|你需要财主家(困难)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 财主家扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 困难财主家扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 财主家扫荡成功。
+  @print ✅ 困难财主家扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 流氓巷 && (Info_Check_Cross5AM) == true
  cr lmw 0 (Daily_Dungeon_FB_Count)
@@ -1264,18 +1273,18 @@ lingshou jh train (Daily_Lingshou_ID)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本桃花岛还没解锁!|你需要桃花岛(普通)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 桃花岛扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 普通桃花岛扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 桃花岛扫荡成功。
+  @print ✅ 普通桃花岛扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 困难桃花岛 && (Info_Check_Cross5AM) == true
  cr taohua 1 (Daily_Dungeon_FB_Count)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本桃花岛还没解锁!|你需要桃花岛(困难)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 桃花岛扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 困难桃花岛扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 桃花岛扫荡成功。
+  @print ✅ 困难桃花岛扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 白驼山 && (Info_Check_Cross5AM) == true
  cr baituo 0 (Daily_Dungeon_FB_Count)
@@ -1300,90 +1309,90 @@ lingshou jh train (Daily_Lingshou_ID)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本冰火岛还没解锁!|你需要冰火岛(普通)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 冰火岛扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 普通冰火岛扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 冰火岛扫荡成功。
+  @print ✅ 普通冰火岛扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 困难冰火岛 && (Info_Check_Cross5AM) == true
  cr binghuo 1 (Daily_Dungeon_FB_Count)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本冰火岛还没解锁!|你需要冰火岛(困难)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 冰火岛扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 困难冰火岛扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 冰火岛扫荡成功。
+  @print ✅ 困难冰火岛扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 普通移花宫 && (Info_Check_Cross5AM) == true
  cr yihua 0 (Daily_Dungeon_FB_Count)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本移花宫还没解锁!|你需要移花宫(普通)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 移花宫扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 普通移花宫扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 移花宫扫荡成功。
+  @print ✅ 普通移花宫扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 困难移花宫 && (Info_Check_Cross5AM) == true
  cr yihua 1 (Daily_Dungeon_FB_Count)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本移花宫还没解锁!|你需要移花宫(困难)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 移花宫扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 困难移花宫扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 移花宫扫荡成功。
+  @print ✅ 困难移花宫扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 普通燕子坞 && (Info_Check_Cross5AM) == true
  cr Yanziwu 0 (Daily_Dungeon_FB_Count)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本燕子坞还没解锁!|你需要燕子坞(普通)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 燕子坞扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 普通燕子坞扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 燕子坞扫荡成功。
+  @print ✅ 普通燕子坞扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 困难燕子坞 && (Info_Check_Cross5AM) == true
  cr Yanziwu 1 (Daily_Dungeon_FB_Count)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本燕子坞还没解锁!|你需要燕子坞(困难)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 燕子坞扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 困难燕子坞扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 燕子坞扫荡成功。
+  @print ✅ 困难燕子坞扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 普通黑木崖 && (Info_Check_Cross5AM) == true
  cr heimuya 0 (Daily_Dungeon_FB_Count)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本黑木崖还没解锁!|你需要黑木崖(普通)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 黑木崖扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 普通黑木崖扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 黑木崖扫荡成功。
+  @print ✅ 普通黑木崖扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 困难黑木崖 && (Info_Check_Cross5AM) == true
  cr heimuya 1 (Daily_Dungeon_FB_Count)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本黑木崖还没解锁!|你需要黑木崖(困难)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 黑木崖扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 困难黑木崖扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 黑木崖扫荡成功。
+  @print ✅ 困难黑木崖扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 普通缥缈峰 && (Info_Check_Cross5AM) == true
  cr piaomiaofeng 0 (Daily_Dungeon_FB_Count)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本缥缈峰还没解锁!|你需要缥缈峰(普通)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 缥缈峰扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 普通缥缈峰扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 缥缈峰扫荡成功。
+  @print ✅ 普通缥缈峰扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 困难缥缈峰 && (Info_Check_Cross5AM) == true
  cr piaomiaofeng 1 (Daily_Dungeon_FB_Count)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本缥缈峰还没解锁!|你需要缥缈峰(困难)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 缥缈峰扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 困难缥缈峰扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 缥缈峰扫荡成功。
+  @print ✅ 困难缥缈峰扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 光明顶 && (Info_Check_Cross5AM) == true
  cr guangmingding 0 (Daily_Dungeon_FB_Count)
@@ -1399,18 +1408,18 @@ lingshou jh train (Daily_Lingshou_ID)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本天龙寺还没解锁!|你需要天龙寺(普通)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 天龙寺扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 普通天龙寺扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 天龙寺扫荡成功。
+  @print ✅ 普通天龙寺扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 困难天龙寺 && (Info_Check_Cross5AM) == true
  cr tianlongsi 1 (Daily_Dungeon_FB_Count)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本天龙寺还没解锁!|你需要天龙寺(困难)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 天龙寺扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 困难天龙寺扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 天龙寺扫荡成功。
+  @print ✅ 困难天龙寺扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 血刀门 && (Info_Check_Cross5AM) == true
  cr xuedao 0 (Daily_Dungeon_FB_Count)
@@ -1426,18 +1435,18 @@ lingshou jh train (Daily_Lingshou_ID)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本古墓派还没解锁!|你需要古墓派(普通)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 古墓派扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 普通古墓派扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 古墓派扫荡成功。
+  @print ✅ 普通古墓派扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 困难古墓派 && (Info_Check_Cross5AM) == true
  cr gumu 1 (Daily_Dungeon_FB_Count)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本古墓派还没解锁!|你需要古墓派(困难)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 古墓派扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 困难古墓派扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 古墓派扫荡成功。
+  @print ✅ 困难古墓派扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 华山论剑 && (Info_Check_Cross5AM) == true
  cr huashanlunjian 0 (Daily_Dungeon_FB_Count)
@@ -1462,18 +1471,45 @@ lingshou jh train (Daily_Lingshou_ID)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本净念禅宗还没解锁!|你需要净念禅宗(普通)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 净念禅宗扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 普通净念禅宗扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 净念禅宗扫荡成功。
+  @print ✅ 普通净念禅宗扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 困难净念禅宗 && (Info_Check_Cross5AM) == true
  cr jingnianchanzong 1 (Daily_Dungeon_FB_Count)
  @wait 500
  @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本净念禅宗还没解锁!|你需要净念禅宗(困难)单人模式完成100%才可以扫荡副本!
  [if] (Now_Dungeon_Check) != 获
-  tm ❌ 净念禅宗扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+  tm ❌ 困难净念禅宗扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 净念禅宗扫荡成功。
+  @print ✅ 困难净念禅宗扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 普通慈航静斋 && (Info_Check_Cross5AM) == true
+ cr cihangjingzhai 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本慈航静斋还没解锁!|你需要慈航静斋(普通)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 普通慈航静斋扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 普通慈航静斋扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 困难慈航静斋 && (Info_Check_Cross5AM) == true
+ cr cihangjingzhai 1 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本慈航静斋还没解锁!|你需要慈航静斋(困难)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 困难慈航静斋扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 困难慈航静斋扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 阴阳谷 && (Info_Check_Cross5AM) == true
+ cr yinyanggu 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本阴阳谷还没解锁!|你需要阴阳谷(普通)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 阴阳谷扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 阴阳谷扫荡成功。
 
 //禁地
 
@@ -1502,7 +1538,7 @@ lingshou jh train (Daily_Lingshou_ID)
  [if] (Now_Dungeon_Check) != 获
   tm ❌ 地下监狱扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
-  @print ✅ 地下监狱扫荡成功。
+  @print ✅ 普通地下监狱扫荡成功。
 
 [if] (Daily_Dungeon_FB_Name) == 困难地下监狱 && (Info_Check_Cross5AM) == true
  cr dixiajianyu 1 (Daily_Dungeon_FB_Count)
@@ -1512,6 +1548,25 @@ lingshou jh train (Daily_Lingshou_ID)
   tm ❌ 困难地下监狱扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
   @print ✅ 困难地下监狱扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 普通炼狱熔炉 && (Info_Check_Cross5AM) == true
+ cr lianyu 0 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本炼狱熔炉还没解锁!|你需要炼狱熔炉(普通)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 普通炼狱熔炉扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 普通炼狱熔炉扫荡成功。
+
+[if] (Daily_Dungeon_FB_Name) == 困难炼狱熔炉 && (Info_Check_Cross5AM) == true
+ cr lianyu 1 (Daily_Dungeon_FB_Count)
+ @wait 500
+ @tip 次，共($Now_Dungeon_Check)得|没时间这么做|你的精力不够，无法扫荡副本。|副本炼狱熔炉还没解锁!|你需要炼狱熔炉(困难)单人模式完成100%才可以扫荡副本!
+ [if] (Now_Dungeon_Check) != 获
+  tm ❌ 困难炼狱熔炉扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
+ [if] (Now_Dungeon_Check) == 获
+  @print ✅ 困难炼狱熔炉扫荡成功。
+
 //结束挂机------------------------------------------------------------------------------
 [if] (Daily_Battle_Auto) == 自动
  $stoppfm
