@@ -1,15 +1,12 @@
-//流程更新日期：2026/11/13  仅支持内置插件WSMUD2 26.3.6
+//流程更新日期：2026/11/23  仅支持内置插件WSMUD2 26.3.6
 //1.服务器卡顿、延迟可能造成流程判断异常，请自行注意。2.角色改名后需重新设置。3.灵兽秘境中自动出招会失效，请注意别被打死。
 //4.黄金不够会造成购买扫荡符、运镖等流程卡住，请自行备好充足黄金。5.背包空间不足可能会产生问题，请自行注意背包空间。
 //6.自动刷新当铺请在插件中先设定好需要购买的物品，本流程只进行刷新。
 //如有BUG反馈、提供功能建议，请至QQ群(629421026)@夜话。(服务器卡顿、断线造成的问题难以解决。)
 //本流程免费，旨在日常减负，请勿用作商业用途，喜欢本流程欢迎赞助支持。
-//更新记录->增加慈航、阴阳谷、炼狱熔炉每日扫荡
-//更新记录->增加灵兽副本选择(混沌、鸿蒙)
-//更新记录->修复驭兽符购买问题
-//更新记录->修复灵兽副本记录问题
+//更新记录->增加百草渊自动领取、消费师徒值换取精力丹、适配新御兽符购买途径。
 //自动更新------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-($Now_Version) = 2026111302
+($Now_Version) = 2026112301
 ($Repourl) = https://cdn.jsdelivr.net/gh/TwEric123/WXMUD@main
 ($Net_Version_Name) = Daily_Version
 ($Task_Flow_Name) = A1日常
@@ -34,7 +31,7 @@
  [exit]
 [if] (Now_Version) != stop && (Net_Version) != null && (Net_Version) != ""
  @print 🌐 网络连接正常，远程版本号为：(Net_Version)
- @print 📰 增加慈航、阴阳谷、炼狱熔炉每日扫荡(以及另外给所有副本普/困扫荡结果加上提示)、增加灵兽副本选择(混沌、鸿蒙)、修复驭兽符购买问题
+ @print 📰 增加百草渊自动领取、消费师徒值换取精力丹、适配新御兽符购买途径。
  [if] (Net_Version) == (Now_Version)
   @print 🎉 当前已是最新版本，无需更新。
  [if] (Net_Version) != (Now_Version)
@@ -64,7 +61,7 @@
 @js window.subTabs = document.querySelectorAll('.dialog-footer span, .dialog-tab span')
 @js window.subTabs && window.subTabs[0] && window.subTabs[0].click()
 @await (Dom_Load_Time)
-
+//扫荡
 @js window.shopTitles = document.querySelectorAll('.shop-item-title')
 @js window.targetTitle = undefined
 @js for (var i = 0; i < window.shopTitles.length; i++) { if (window.shopTitles[i].innerText.indexOf('扫荡符') !== -1) { window.targetTitle = window.shopTitles[i]; break; } }
@@ -90,6 +87,19 @@
 @js for (var i = 0; i < window.parts.length; i++) { if (window.parts[i] !== "_confirm" && window.parts[i] !== "shop" && window.parts[i] !== "0" && window.parts[i].length > 5) { window.realId = window.parts[i].trim(); break; } }
 
 @js ($Dom_Relive_Ticket_ID) = (window.realId && window.realId !== "null") ? window.realId : ""
+//御兽
+@js window.shopTitles = document.querySelectorAll('.shop-item-title')
+@js window.targetTitle = undefined
+@js for (var i = 0; i < window.shopTitles.length; i++) { if (window.shopTitles[i].innerText.indexOf('驭兽符') !== -1) { window.targetTitle = window.shopTitles[i]; break; } }
+
+@js window.parentCard = window.targetTitle ? (window.targetTitle.parentElement.parentElement || window.targetTitle.parentElement) : null
+@js window.buyBtn = window.parentCard ? window.parentCard.querySelector('[cmd*="_confirm shop"]') : null
+@js window.shopCmd = window.buyBtn ? window.buyBtn.getAttribute('cmd') : ""
+
+@js window.parts = window.shopCmd ? window.shopCmd.split(' ') : []; window.realId = ""
+@js for (var i = 0; i < window.parts.length; i++) { if (window.parts[i] !== "_confirm" && window.parts[i] !== "shop" && window.parts[i] !== "0" && window.parts[i].length > 5) { window.realId = window.parts[i].trim(); break; } }
+
+@js ($Dom_Buy_Pet_Ticket_ID) = (window.realId && window.realId !== "null") ? window.realId : ""
 //
 @js window.btn = document.querySelector('.dialog-close'); window.btn && window.btn.click()
 @await (Dom_Load_Time)
@@ -169,6 +179,11 @@
  @print 🛒 天师符|ID:(Dom_Relive_Ticket_ID)
 [if] (Dom_Relive_Ticket_ID) == null
  tm ❌ 天师符|ID:侦测失败
+ 
+[if] (Dom_Buy_Pet_Ticket_ID) != null
+ @print 🛒 御兽符|ID:(Dom_Buy_Pet_Ticket_ID)
+[if] (Dom_Buy_Pet_Ticket_ID) == null
+ tm ❌ 御兽符|ID:侦测失败
 
 [if] (Dom_Lingshou_ID) != null
  @print 🐾 灵兽:(Dom_Lingshou_Name)
@@ -218,12 +233,19 @@
 [if] (Load_Daily_Buy_Relive_Ticket_15) == 购买
  ($Load_Daily_Buy_Relive_Ticket_15) = 🛒购买
 
-($Save_Daily_Buy_Pet_Ticket) = (:name)Daily_Buy_Pet_Ticket
-@js ($Load_Daily_Buy_Pet_Ticket) = WSStore.get('(Save_Daily_Buy_Pet_Ticket)')
-[if] (Load_Daily_Buy_Pet_Ticket) == null || (Load_Daily_Buy_Pet_Ticket) == 跳过
- ($Load_Daily_Buy_Pet_Ticket) = ❌跳过
-[if] (Load_Daily_Buy_Pet_Ticket) == 购买
- ($Load_Daily_Buy_Pet_Ticket) = 🛒购买
+($Save_Daily_Buy_Pet_Ticket_10) = (:name)Daily_Buy_Pet_Ticket_10
+@js ($Load_Daily_Buy_Pet_Ticket_10) = WSStore.get('(Save_Daily_Buy_Pet_Ticket_10)')
+[if] (Load_Daily_Buy_Pet_Ticket_10) == null || (Load_Daily_Buy_Pet_Ticket_10) == 跳过
+ ($Load_Daily_Buy_Pet_Ticket_10) = ❌跳过
+[if] (Load_Daily_Buy_Pet_Ticket_10) == 购买
+ ($Load_Daily_Buy_Pet_Ticket_10) = 🛒购买
+ 
+($Save_Daily_Buy_Academy_Energy_10) = (:name)Daily_Buy_Academy_Energy_10
+@js ($Load_Daily_Buy_Academy_Energy_10) = WSStore.get('(Save_Daily_Buy_Academy_Energy_10)')
+[if] (Load_Daily_Buy_Academy_Energy_10) == null || (Load_Daily_Buy_Academy_Energy_10) == 跳过
+ ($Load_Daily_Buy_Academy_Energy_10) = ❌跳过
+[if] (Load_Daily_Buy_Academy_Energy_10) == 购买
+ ($Load_Daily_Buy_Academy_Energy_10) = 🛒购买
 
 ($Save_Daily_Companion_Work) = (:name)Daily_Companion_Work
 @js ($Load_Daily_Companion_Work) = WSStore.get('(Save_Daily_Companion_Work)')
@@ -286,6 +308,13 @@
  ($Load_Daily_Penglai_Put) = ⛰️观山
 [if] (Load_Daily_Penglai_Put) == 临水
  ($Load_Daily_Penglai_Put) = 🌊临水
+
+($Save_Daily_BaicaoYuan_Quickly) = (:name)Daily_BaicaoYuan_Quickly
+@js ($Load_Daily_BaicaoYuan_Quickly) = WSStore.get('(Save_Daily_BaicaoYuan_Quickly)')
+[if] (Load_Daily_BaicaoYuan_Quickly) == null || (Load_Daily_BaicaoYuan_Quickly) == 跳过
+ ($Load_Daily_BaicaoYuan_Quickly) = ❌跳过
+[if] (Load_Daily_BaicaoYuan_Quickly) == 领取
+ ($Load_Daily_BaicaoYuan_Quickly) = 🎁领取
 
 ($Save_Daily_Battle_Weapon) = (:name)Daily_Battle_Weapon
 @js ($Load_Daily_Battle_Weapon) = WSStore.get('(Save_Daily_Battle_Weapon)')
@@ -412,35 +441,43 @@
 
 #input ($Daily_Buy_Skip_Ticket_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--扫荡符ID,(Dom_Skip_Ticket_ID)
 #input ($Daily_Buy_Relive_Ticket_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--天师符ID,(Dom_Relive_Ticket_ID)
+#input ($Daily_Buy_Pet_Ticket_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--御兽符ID,(Dom_Buy_Pet_Ticket_ID)
 #input ($Daily_Lingshou_ID) = <span style="color: #500000; font-weight: bold;">自动侦测--出战中灵兽ID,(Dom_Lingshou_ID)
 
 #select ($Daily_Buy_Refresh_Pawnshop) = <span style="color: #14b53a; font-weight: bold;">每日购买--当铺刷新,❌跳过|🔄刷新,(Load_Daily_Buy_Refresh_Pawnshop)
 #select ($Daily_Buy_Skip_Ticket_100) = <span style="color: #14b53a; font-weight: bold;">每日购买--扫荡符,❌跳过|🛒购买,(Load_Daily_Buy_Skip_Ticket_100)
 #select ($Daily_Buy_Relive_Ticket_15) = <span style="color: #14b53a; font-weight: bold;">每日购买--天师符,❌跳过|🛒购买,(Load_Daily_Buy_Relive_Ticket_15)
-#select ($Daily_Buy_Pet_Ticket) = <span style="color: #14b53a; font-weight: bold;">每日购买--驭兽符,❌跳过|🛒购买,(Load_Daily_Buy_Pet_Ticket)
+#select ($Daily_Buy_Pet_Ticket_10) = <span style="color: #14b53a; font-weight: bold;">每日购买--驭兽符,❌跳过|🛒购买,(Load_Daily_Buy_Pet_Ticket_10)
+#select ($Daily_Buy_Academy_Energy_10) = <span style="color: #14b53a; font-weight: bold;">每日购买--精力丹,❌跳过|🛒购买,(Load_Daily_Buy_Academy_Energy_10)
 
 #select ($Daily_Companion_Work) = <span style="color: #00CC00; font-weight: bold;">随从--发呆检测(矿>鱼>药),❌跳过|⚡自动,(Load_Daily_Companion_Work)
 #select ($Daily_Shitu_Greet) = <span style="color: #13339e; font-weight: bold;">日常--师徒请安,❌跳过|🙏请安,(Load_Daily_Shitu_Greet)
 #select ($Daily_Job_Greet) = <span style="color: #13339e; font-weight: bold;">日常--门派请安,❌跳过|🙏请安,(Load_Daily_Job_Greet)
 #select ($Daily_Job_Reward) = <span style="color: #13339e; font-weight: bold;">日常--门派物资,❌跳过|🎁领取,(Load_Daily_Job_Reward)
-#select ($Daily_Dungeon_Yanziwu) = <span style="color: #990099; font-weight: bold;">副本--燕子坞扫荡五次,❌跳过|🟢普通|🔴困难,(Load_Daily_Dungeon_Yanziwu)
 
+#select ($Daily_Dungeon_Yanziwu) = <span style="color: #990099; font-weight: bold;">副本--燕子坞扫荡五次,❌跳过|🟢普通|🔴困难,(Load_Daily_Dungeon_Yanziwu)
 #select ($Daily_Dungeon_FB_Name) = <span style="color: #990099; font-weight: bold;">副本--每日扫荡,❌跳过|🟢树林|🟢普通财主家|🔴困难财主家|🟢流氓巷|🟢丽春院|🟢兵营|🟢庄府|🟢鳌拜府|🟢天地会|🟢神龙教|🟢关外|🟢温府|🟢五毒教|🟢恒山|🟢青城山|🟢衡山|🟢泰山|🟢嵩山|🟢云梦沼泽|🟢普通桃花岛|🔴困难桃花岛|🟢白驼山|🟢星宿海|🟢普通冰火岛|🔴困难冰火岛|🟢普通移花宫|🔴困难移花宫|🟢普通燕子坞|🔴困难燕子坞|🟢普通黑木崖|🔴困难黑木崖|🟢普通缥缈峰|🔴困难缥缈峰|🟢光明顶|🟢普通天龙寺|🔴困难天龙寺|🟢血刀门|🟢普通古墓派|🔴困难古墓派|🟢华山论剑|🟢侠客岛|🟢普通净念禅宗|🔴困难净念禅宗|🟢普通慈航静斋|🔴困难慈航静斋|🟢阴阳谷|🟢普通遗忘墓地|🔴困难遗忘墓地|🟢普通地下监狱|🔴困难地下监狱|🟢普通炼狱熔炉|🔴困难炼狱熔炉,(Load_Daily_Dungeon_FB_Name)
 #input ($Daily_Dungeon_FB_Count) = <span style="color: #990099; font-weight: bold;">副本--每日扫荡次数,(Load_Daily_Dungeon_FB_Count)
 
 #select ($Daily_Penglai_Search) = <span style="color: #0f9994; font-weight: bold;">蓬莱岛--搜索,❌跳过|🔍搜索,(Load_Daily_Penglai_Search)
 #select ($Daily_Penglai_Put) = <span style="color: #0f9994; font-weight: bold;">蓬莱岛--观山/临水,❌跳过|⛰️观山|🌊临水,(Load_Daily_Penglai_Put)
+#select ($Daily_BaicaoYuan_Quickly) = <span style="color: #0f9994; font-weight: bold;">百草渊--领取奖励,❌跳过|🎁领取,(Load_Daily_BaicaoYuan_Quickly)
+
 #input ($Daily_Battle_Weapon) = <span style="color: #990f59; font-weight: bold;">战斗--使用武器(灵兽秘境、高危镖),(Load_Daily_Battle_Weapon)
 #select ($Daily_Battle_Auto) = <span style="color: #990f59; font-weight: bold;">战斗--自动出招,❌跳过|⚔️自动,(Load_Daily_Battle_Auto)
+
 #select ($Daily_Lingshou_Trial) = <span style="color: #876d0c; font-weight: bold;">灵兽秘境--探索,❌跳过|👻兽魂|🧥兽装|🩸血脉|✨神通|🌱成长|🏛️远古|🕳️混沌|🌌鸿蒙,(Load_Daily_Lingshou_Trial)
 #select ($Daily_Lingshou_Trial_Difficulty) = <span style="color: #876d0c; font-weight: bold;">灵兽秘境--难度,⚪普通|🟢困难|🔵噩梦|🟡地狱|🟠炼狱|🔴深渊,(Load_Daily_Lingshou_Trial_Difficulty)
+
 #select ($Daily_Yunbiao_Auto)= <span style="color: #75076c; font-weight: bold;">自动运镖--运镖(建议隐藏玩家防卡死),❌跳过|🚛开启,(Load_Daily_Yunbiao_Auto)
 #select ($Daily_Yunbiao_Free)= <span style="color: #75076c; font-weight: bold;">自动运镖--元宝运镖选择(谨慎选择),🎁免费|💸元宝,(Load_Daily_Yunbiao_Free)
 #select ($Daily_Yunbiao_Type)= <span style="color: #75076c; font-weight: bold;">自动运镖--运镖类型(高危需师徒组队),🧍安全|🧑‍🤝‍🧑高危,(Load_Daily_Yunbiao_Type)
 #select ($Daily_Yunbiao_Car)= <span style="color: #75076c; font-weight: bold;">自动运镖--镖车类型(九霄需武仙以上),👑皇家贡镖|📦普通民镖|🏪商行商标|💎珍宝玉镖|🌟九霄仙贡镖,(Load_Daily_Yunbiao_Car)
+
 #select ($Daily_Lingshou_Interact) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--互动五次,❌跳过|🐾互动,(Load_Daily_Lingshou_Interact)
 #select ($Daily_Lingshou_Explore) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--探宝五次,❌跳过|🗺️探宝,(Load_Daily_Lingshou_Explore)
 #select ($Daily_Lingshou_Train) = <span style="color: #ccbf0e; font-weight: bold;">灵宠--修行五次,❌跳过|🧘修行,(Load_Daily_Lingshou_Train)
+
 #select ($Daily_End) = <span style="color: #e30707; font-weight: bold;">结束时动作,⛏️挖矿|❌跳过|🧘修炼,(Load_Daily_End)
 #select ($Daily_Reset_Flag) = <span style="color: #e30707; font-weight: bold;">特殊功能,❌跳过|🔄设为新的一天|📁存档模式,❌跳过
 #config
@@ -450,28 +487,35 @@
 @js ($Daily_Buy_Refresh_Pawnshop) = '(Daily_Buy_Refresh_Pawnshop)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Buy_Skip_Ticket_100) = '(Daily_Buy_Skip_Ticket_100)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Buy_Relive_Ticket_15) = '(Daily_Buy_Relive_Ticket_15)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
-@js ($Daily_Buy_Pet_Ticket) = '(Daily_Buy_Pet_Ticket)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Buy_Pet_Ticket_10) = '(Daily_Buy_Pet_Ticket_10)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_Buy_Academy_Energy_10) = '(Daily_Buy_Academy_Energy_10)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+
 @js ($Daily_Companion_Work) = '(Daily_Companion_Work)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Shitu_Greet) = '(Daily_Shitu_Greet)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Job_Greet) = '(Daily_Job_Greet)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Job_Reward) = '(Daily_Job_Reward)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
-@js ($Daily_Dungeon_Yanziwu) = '(Daily_Dungeon_Yanziwu)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 
+@js ($Daily_Dungeon_Yanziwu) = '(Daily_Dungeon_Yanziwu)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Dungeon_FB_Name) = '(Daily_Dungeon_FB_Name)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 
 @js ($Daily_Penglai_Search) = '(Daily_Penglai_Search)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Penglai_Put) = '(Daily_Penglai_Put)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+@js ($Daily_BaicaoYuan_Quickly) = '(Daily_BaicaoYuan_Quickly)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+
 @js ($Daily_Battle_Weapon) = '(Daily_Battle_Weapon)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Battle_Auto) = '(Daily_Battle_Auto)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Lingshou_Trial) = '(Daily_Lingshou_Trial)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Lingshou_Trial_Difficulty) = '(Daily_Lingshou_Trial_Difficulty)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+
 @js ($Daily_Yunbiao_Auto) = '(Daily_Yunbiao_Auto)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Yunbiao_Free) = '(Daily_Yunbiao_Free)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Yunbiao_Type) = '(Daily_Yunbiao_Type)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Yunbiao_Car) = '(Daily_Yunbiao_Car)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+
 @js ($Daily_Lingshou_Interact) = '(Daily_Lingshou_Interact)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Lingshou_Explore) = '(Daily_Lingshou_Explore)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Lingshou_Train) = '(Daily_Lingshou_Train)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
+
 @js ($Daily_End) = '(Daily_End)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 @js ($Daily_Reset_Flag) = '(Daily_Reset_Flag)'.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim()
 //除错------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -485,29 +529,37 @@
 @js WSStore.set('(Save_Daily_Buy_Refresh_Pawnshop)','(Daily_Buy_Refresh_Pawnshop)')
 @js WSStore.set('(Save_Daily_Buy_Skip_Ticket_100)','(Daily_Buy_Skip_Ticket_100)')
 @js WSStore.set('(Save_Daily_Buy_Relive_Ticket_15)','(Daily_Buy_Relive_Ticket_15)')
-@js WSStore.set('(Save_Daily_Buy_Pet_Ticket)','(Daily_Buy_Pet_Ticket)')
+@js WSStore.set('(Save_Daily_Buy_Pet_Ticket_10)','(Daily_Buy_Pet_Ticket_10)')
+@js WSStore.set('(Save_Daily_Buy_Academy_Energy_10)','(Daily_Buy_Academy_Energy_10)')
+
 @js WSStore.set('(Save_Daily_Companion_Work)','(Daily_Companion_Work)')
 @js WSStore.set('(Save_Daily_Shitu_Greet)','(Daily_Shitu_Greet)')
 @js WSStore.set('(Save_Daily_Job_Greet)','(Daily_Job_Greet)')
 @js WSStore.set('(Save_Daily_Job_Reward)','(Daily_Job_Reward)')
-@js WSStore.set('(Save_Daily_Dungeon_Yanziwu)','(Daily_Dungeon_Yanziwu)')
 
+@js WSStore.set('(Save_Daily_Dungeon_Yanziwu)','(Daily_Dungeon_Yanziwu)')
 @js WSStore.set('(Save_Daily_Dungeon_FB_Name)','(Daily_Dungeon_FB_Name)')
 @js WSStore.set('(Save_Daily_Dungeon_FB_Count)','(Daily_Dungeon_FB_Count)')
 
 @js WSStore.set('(Save_Daily_Penglai_Search)','(Daily_Penglai_Search)')
 @js WSStore.set('(Save_Daily_Penglai_Put)','(Daily_Penglai_Put)')
+@js WSStore.set('(Save_Daily_BaicaoYuan_Quickly)','(Daily_BaicaoYuan_Quickly)')
+
 @js WSStore.set('(Save_Daily_Battle_Weapon)','(Daily_Battle_Weapon)')
 @js WSStore.set('(Save_Daily_Battle_Auto)','(Daily_Battle_Auto)')
+
 @js WSStore.set('(Save_Daily_Lingshou_Trial)','(Daily_Lingshou_Trial)')
 @js WSStore.set('(Save_Daily_Lingshou_Trial_Difficulty)','(Daily_Lingshou_Trial_Difficulty)')
+
 @js WSStore.set('(Save_Daily_Yunbiao_Auto)','(Daily_Yunbiao_Auto)')
 @js WSStore.set('(Save_Daily_Yunbiao_Free)','(Daily_Yunbiao_Free)')
 @js WSStore.set('(Save_Daily_Yunbiao_Type)','(Daily_Yunbiao_Type)')
 @js WSStore.set('(Save_Daily_Yunbiao_Car)','(Daily_Yunbiao_Car)')
+
 @js WSStore.set('(Save_Daily_Lingshou_Interact)','(Daily_Lingshou_Interact)')
 @js WSStore.set('(Save_Daily_Lingshou_Explore)','(Daily_Lingshou_Explore)')
 @js WSStore.set('(Save_Daily_Lingshou_Train)','(Daily_Lingshou_Train)')
+
 @js WSStore.set('(Save_Daily_End)','(Daily_End)')
 //流程开始------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 @cmdDelay 0
@@ -719,6 +771,18 @@ info
  [if] (Buy_Relive_Ticket_Check) == 从商店里购买
   @print 🛒 已成功购买15张天师符。
 @wait 500
+//买灵兽符------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+($Buy_Pet_Ticket_Check) = null
+[if] (Daily_Buy_Pet_Ticket_10) == 购买 && (Info_Check_Cross5AM) == true
+ shop (Daily_Buy_Pet_Ticket_ID) 10
+ @tip 灵兽符($Buy_Pet_Ticket_Check)上限。|商店($Buy_Pet_Ticket_Check)东西。|你($Buy_Pet_Ticket_Check)了
+ [if] (Buy_Pet_Ticket_Check) == 不出售这个
+  tm ❌ 灵兽符购买失败，请检查ID输入是否正确，本日需手动购买。
+ [if] (Buy_Pet_Ticket_Check) == 到达本日购买
+  @print 🛒 今日灵兽符购买已完成。
+ [if] (Buy_Pet_Ticket_Check) == 从商店里购买
+  @print 🛒 已成功购买10张灵兽符。
+@wait 500
 //师傅请安------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [if] (Daily_Shitu_Greet) == 请安 && (Info_Check_Cross5AM) == true
  shitu greet
@@ -790,19 +854,6 @@ info
   store all
   @tip 你将背包中的道具自动合并到仓库中已有的道具
   @wait 1000
-//买灵兽符------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-[if] (Daily_Buy_Pet_Ticket) == 购买 && (Info_Check_Cross5AM) == true
- jh fam lingshou start
- @until (:room) == 御灵谷-御灵谷入口
- go north
- @until (:room) == 御灵谷-灵兽洞天
- go west
- @until (:room) == 御灵谷-兽痕石台
- @wait 1000
- lingshou_gold_shop {r陆青山}?
- @wait 500
- buy 10 lingshou_yushoufu from {r陆青山}?
- @wait 1000
 //蓬莱区域------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [if] (Info_Check_Cross5AM) == true
  [if] (Daily_Penglai_Search) == 搜索 || (Daily_Penglai_Put) != 跳过
@@ -832,6 +883,10 @@ info
     put_right
     @print 🪂 蓬莱岛放入宝石(临水)
    @wait 1000
+//百草渊领取------------------------------------------------------------------------------------------------------------------------------------------------------------
+[if] (Daily_BaicaoYuan_Quickly) == 领取 && (Info_Check_Cross5AM) == true
+ events baicaoreward ok
+ @wait 500
 //战斗准备------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [if] (Daily_Battle_Weapon) != null
  eq {b(Daily_Battle_Weapon)}?
@@ -1572,7 +1627,20 @@ lingshou jh train (Daily_Lingshou_ID)
   tm ❌ 困难炼狱熔炉扫荡失败，检查精力是否充足、副本是否已解锁、该难度是否可以扫荡。
  [if] (Now_Dungeon_Check) == 获
   @print ✅ 困难炼狱熔炉扫荡成功。
-
+//买精力丹------------------------------------------------------------------------------
+[if] (Daily_Buy_Academy_Energy_10) == 购买 && (Info_Check_Cross5AM) == true
+ @wait 500
+ jh fam 0 start
+ @until (:room) == 扬州城-广场
+ go east
+ @until (:room) == 扬州城-东大街
+ go north
+ @until (:room) == 扬州城-书院
+ @wait 500
+ list {r孔圣后人}
+ @wait 500
+ buy 10 {d精力丹b}? from {r孔圣后人}
+ @wait 500
 //结束挂机------------------------------------------------------------------------------
 [if] (Daily_Battle_Auto) == 自动
  $stoppfm
